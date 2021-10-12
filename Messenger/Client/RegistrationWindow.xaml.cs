@@ -10,24 +10,18 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WebSocketSharp;
 
 namespace Client
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for RegistrationWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class RegistrationWindow : Window
     {
-        
-        public MainWindow()
+        public RegistrationWindow()
         {
-
             InitializeComponent();
-            LoginWindow loginWindow = new LoginWindow();
-            loginWindow.Show();
         }
     }
 }
