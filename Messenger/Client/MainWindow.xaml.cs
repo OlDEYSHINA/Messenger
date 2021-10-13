@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WebSocketSharp;
+using Client.BLL;
 
 namespace Client
 {
@@ -26,6 +27,7 @@ namespace Client
         {
 
             InitializeComponent();
+            //ConnectManager.StartConnection();
             LoginWindow loginWindow = new LoginWindow();
             loginWindow.Show();
         }
