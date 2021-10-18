@@ -1,0 +1,26 @@
+﻿<UserControl x:Class="Client.View.ChatView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:viewModels="clr-namespace:Client.ViewModels"
+             xmlns:local="clr-namespace:Client.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.DataContext>
+        <viewModels:ChatViewModel/>
+    </UserControl.DataContext>
+    <Grid>
+        <ListBox HorizontalAlignment="Left" Height="388" VerticalAlignment="Top" Width="234" Margin="10,10,0,0"/>
+        <TextBox HorizontalAlignment="Left" Height="19" Margin="320,421,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="365"/>
+        <Button Content="Button" HorizontalAlignment="Left" Height="19" Margin="701,421,10,10" VerticalAlignment="Top" Width="89"/>
+        <ListView HorizontalAlignment="Left" Height="388" Margin="320,10,0,0" VerticalAlignment="Top" Width="470">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+    </Grid>
+</UserControl>

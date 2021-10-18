@@ -1,23 +1,50 @@
-﻿using Client.Models;
-using Prism.Mvvm;
+﻿using Client.BLL;
+using Client.BLL.Interfaces;
+using Client.Models;
 using Prism.Commands;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+using Prism.Mvvm;
 using System.Windows;
-using System.Threading.Tasks;
+
 
 namespace Client.ViewModels
 {
     class LoginVM : BindableBase
     {
         private string _username;
-        private bool _correctUsername=false;
+        private bool _correctUsername;
 
         private string _password;
-        private bool _correctPassword=false;
+        private bool _correctPassword;
 
+        private string _errorLabel;
+        private Visibility _visibility;
+
+        private ILoginModel _login;
+        private INetworkManager _networkManager;
+
+        public Visibility Visibility
+        {
+            get
+            {
+                return _visibility;
+            }
+            set
+            {
+                SetProperty(ref _visibility, value);
+            }
+        }
+
+        public string ErrorLabel
+        {
+            get
+            {
+                return _errorLabel;
+            }
+            set
+            {
+                SetProperty(ref _errorLabel, value);
+            }
+        }
 
         public string UsernameLogin
         {
@@ -30,16 +57,17 @@ namespace Client.ViewModels
                 if (string.IsNullOrEmpty(value))
                 {
                     _correctUsername = false;
+                    ErrorLabel = "Заполните поле имя пользователя";
                 }
                 else
                 {
+                    
                     SetProperty(ref _username, value);
                     _correctUsername = true;
                 }
             }
-                
         }
-       
+
         public string PasswordLogin
         {
             get
@@ -51,6 +79,7 @@ namespace Client.ViewModels
                 if (string.IsNullOrEmpty(value))
                 {
                     _correctPassword = false;
+                    ErrorLabel = "Заполните поле пароль";
                 }
                 else
                 {
@@ -60,27 +89,33 @@ namespace Client.ViewModels
             }
         }
         public DelegateCommand SendCommand { get; }
-
-
+        MainWindowViewModel _mainWindowViewModel;
         public void ConfirmLogin()
         {
-            if(_correctUsername & _correctPassword)
+            if (_correctUsername & _correctPassword)
             {
                 MessageBox.Show("Luck");
+
+                _networkManager.StartConnection();
+                _mainWindowViewModel.ChangeView(MainWindowViewModel.ViewType.Chat);
+             //   Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                // Вывод ошибки в окно
             }
         }
 
-
-        // public event PropertyChangedEventHandler PropertyChanged;
-        //protected virtual void OnPropertyChanged(string propertyName)
-        //{
-        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        //}
-        public LoginVM()
+        public LoginVM(MainWindowViewModel mainWindowViewModel)
         {
-            var login = new LoginModel {Username="Amogus", Password="Aboba" };
-            SendCommand = new DelegateCommand(ConfirmLogin,()=> true);
+            _mainWindowViewModel = mainWindowViewModel;
+            _login = new LoginModel { Username = "Amogus", Password = "Aboba" };
+            SendCommand = new DelegateCommand(ConfirmLogin, () => true);
+            _networkManager = new NetworkManager();
+            _correctPassword = false;
+            _correctUsername = false;
+
         }
-        
+      
     }
 }

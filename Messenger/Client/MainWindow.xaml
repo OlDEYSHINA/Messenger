@@ -4,17 +4,19 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
+        xmlns:view="clr-namespace:Client.View"
+        xmlns:viewModel="clr-namespace:Client.ViewModels"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Visibility="Hidden">
-    <Grid RenderTransformOrigin="0.689,0.455">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="107*"/>
-            <ColumnDefinition Width="685*"/>
-        </Grid.ColumnDefinitions>
-     <!--   <Button x:Name="SendMessageButton" Content="Отправить" HorizontalAlignment="Left" Height="25" Margin="581,363,0,0" VerticalAlignment="Top" Width="66" Click="SendMessageButton_Click" Grid.Column="1"/>
-        <TextBox x:Name="MessageTextBox" HorizontalAlignment="Left" Height="25" Margin="174.344,363,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="391" Grid.Column="1"/>
-        <ListBox x:Name="OnlineUsersListBox" HorizontalAlignment="Left" Height="359" Margin="10,10,0,0" VerticalAlignment="Top" Width="230" Grid.ColumnSpan="2"/>
-        <ListBox x:Name="UserMessageListBox" HorizontalAlignment="Left" Height="298" Margin="174.344,50,0,0" VerticalAlignment="Top" Width="473" Grid.Column="1"/>
-        -->
-    </Grid>
+        d:DataContext="{d:DesignInstance viewModel:MainWindowViewModel}"
+        Title="MainWindow" Height="450" Width="800" SizeToContent="WidthAndHeight">
+   <Window.Resources>
+        <DataTemplate DataType="{x:Type viewModel:LoginVM}">
+            <view:LoginView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModel:ChatViewModel}">
+          <view:ChatView/>
+        </DataTemplate>
+        
+    </Window.Resources>
+    <ContentPresenter Content="{Binding CurrentContentVM}"/>
 </Window>

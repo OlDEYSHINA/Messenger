@@ -23,7 +23,7 @@ namespace Client
         public LoginWindow()
         {
             InitializeComponent();
-            DataContext = new LoginVM();
+            //DataContext = new LoginVM();
         }
     }
 }

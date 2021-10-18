@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace Client.Models
 {
-    class LoginModel : INotifyPropertyChanged
+    class LoginModel : INotifyPropertyChanged,ILoginModel
     {
         private string username;
         private string password;
