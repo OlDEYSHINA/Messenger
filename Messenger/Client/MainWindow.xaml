@@ -16,6 +16,9 @@
         <DataTemplate DataType="{x:Type viewModel:ChatViewModel}">
           <view:ChatView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModel:RegistrationViewModel}">
+            <view:RegistrationView/>
+        </DataTemplate>
         
     </Window.Resources>
     <ContentPresenter Content="{Binding CurrentContentVM}"/>

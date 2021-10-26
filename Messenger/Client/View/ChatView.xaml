@@ -5,22 +5,30 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:viewModels="clr-namespace:Client.ViewModels"
              xmlns:local="clr-namespace:Client.View"
+             xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <UserControl.DataContext>
-        <viewModels:ChatViewModel/>
-    </UserControl.DataContext>
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance viewModels:ChatViewModel}">
+    
     <Grid>
         <ListBox HorizontalAlignment="Left" Height="388" VerticalAlignment="Top" Width="234" Margin="10,10,0,0"/>
-        <TextBox HorizontalAlignment="Left" Height="19" Margin="320,421,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="365"/>
-        <Button Content="Button" HorizontalAlignment="Left" Height="19" Margin="701,421,10,10" VerticalAlignment="Top" Width="89"/>
+        <TextBox HorizontalAlignment="Left" Height="19" Margin="320,421,0,0" TextWrapping="Wrap" Text="{Binding Message}" VerticalAlignment="Top" Width="365"/>
+        <Button Content="Button" Command="{Binding SendMessage}" HorizontalAlignment="Left" Height="19" Margin="701,421,10,10" VerticalAlignment="Top" Width="89"/>
         <ListView HorizontalAlignment="Left" Height="388" Margin="320,10,0,0" VerticalAlignment="Top" Width="470">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=username}" Width="100">Имя</GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=message}" Width="300">Сообщение</GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=time}" Width="80">Время</GridViewColumn>
                 </GridView>
             </ListView.View>
+            <ListView.Resources>
+                <col:ArrayList x:Key="Amogus">
+                    
+                </col:ArrayList>
+            </ListView.Resources>
         </ListView>
+        <Label Content="{Binding IncomeMessage}" HorizontalAlignment="Left"  Height="28" Margin="135,412,0,0" VerticalAlignment="Top" Width="123"/>
 
     </Grid>
 </UserControl>

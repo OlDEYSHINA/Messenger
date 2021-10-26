@@ -20,7 +20,7 @@
             <TextBox x:Name="PasswordTextBox" HorizontalAlignment="Left" Height="25" Margin="81,40,0,0" TextWrapping="Wrap" Text="{Binding PasswordLogin}" VerticalAlignment="Top" Width="311"/>
             <Label x:Name="LoginLabel" Content="Логин" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top" Width="66"/>
             <Label x:Name="PasswordLabel" Content="Пароль" HorizontalAlignment="Left" Margin="10,39,0,0" VerticalAlignment="Top" Width="66"/>
-            <Button x:Name="RegistrationButton" Content="У меня нет учетной записи" HorizontalAlignment="Left" Margin="10,93,0,10" VerticalAlignment="Top" Width="167" Height="21"/>
+            <Button x:Name="RegistrationButton" Content="У меня нет учетной записи" Command="{Binding Registration}" HorizontalAlignment="Left" Margin="10,93,0,10" VerticalAlignment="Top" Width="167" Height="21"/>
             <Label x:Name="ErrorLabel" Content="{Binding ErrorLabel}" HorizontalAlignment="Left" Margin="81,65,0,0" VerticalAlignment="Top" Width="173" Foreground="#FFFD0000"/>
         </Grid>
    

@@ -21,6 +21,7 @@ namespace Client.ViewModels
 
         private ILoginModel _login;
         private INetworkManager _networkManager;
+        MainWindowViewModel _mainWindowViewModel;
 
         public Visibility Visibility
         {
@@ -89,33 +90,46 @@ namespace Client.ViewModels
             }
         }
         public DelegateCommand SendCommand { get; }
-        MainWindowViewModel _mainWindowViewModel;
+        public DelegateCommand Registration { get; }
+       
+        public LoginVM(MainWindowViewModel mainWindowViewModel,INetworkManager networkManager)
+        {
+            _networkManager = networkManager;
+            _networkManager.LoginRequestRecieved += LoginRequest;
+            _mainWindowViewModel = mainWindowViewModel;
+            _login = new LoginModel();
+            SendCommand = new DelegateCommand(ConfirmLogin, () => true);
+            Registration = new DelegateCommand(ShowRegistrationView, () => true);
+            _correctPassword = false;
+            _correctUsername = false;
+        }
+        public void LoginRequest(object sender, LoginRequestEventArgs e)
+        {
+            if(e.Result == "Confirm")
+            {
+                _mainWindowViewModel.ChangeView(MainWindowViewModel.ViewType.Chat);
+            }
+            else
+            {
+                ErrorLabel = e.Result;
+            }
+        }
         public void ConfirmLogin()
         {
             if (_correctUsername & _correctPassword)
             {
-                MessageBox.Show("Luck");
-
-                _networkManager.StartConnection();
-                _mainWindowViewModel.ChangeView(MainWindowViewModel.ViewType.Chat);
-             //   Visibility = Visibility.Hidden;
+                _login.Username = _username;
+                _login.Password = _password;
+                _networkManager.SendLogin(_login);
             }
             else
             {
                 // Вывод ошибки в окно
             }
         }
-
-        public LoginVM(MainWindowViewModel mainWindowViewModel)
+        public void ShowRegistrationView()
         {
-            _mainWindowViewModel = mainWindowViewModel;
-            _login = new LoginModel { Username = "Amogus", Password = "Aboba" };
-            SendCommand = new DelegateCommand(ConfirmLogin, () => true);
-            _networkManager = new NetworkManager();
-            _correctPassword = false;
-            _correctUsername = false;
-
+            _mainWindowViewModel.ChangeView(MainWindowViewModel.ViewType.Registration);
         }
-      
     }
 }

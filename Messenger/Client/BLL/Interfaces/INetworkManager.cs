@@ -8,7 +8,11 @@ namespace Client.BLL.Interfaces
 {
     public interface INetworkManager
     {
+        event EventHandler<ChatMessageEventArgs> MessageRecieved;
+        event EventHandler<LoginRequestEventArgs> LoginRequestRecieved;
         void StartConnection();
+        void SendMessage(string message);
+        void SendLogin(object data);
 
     }
 

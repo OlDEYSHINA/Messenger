@@ -2,6 +2,8 @@
 using Prism.Mvvm;
 using System.Threading;
 using System.Windows;
+using Client.BLL.Interfaces;
+using Client.BLL;
 
 namespace Client.ViewModels
 {
@@ -48,7 +50,7 @@ namespace Client.ViewModels
             {
                 case ViewType.Login:
                     {
-                        OutputView = "LoginView";
+                        CurrentContentVM = loginVM;
                         break;
                     }
                 case ViewType.Chat:
@@ -56,15 +58,25 @@ namespace Client.ViewModels
                         CurrentContentVM = chatViewModel;
                         break;
                     }
+                case ViewType.Registration:
+                    {
+                        CurrentContentVM = registrationViewModel;
+                        break;
+                    }
             }
         }
-        ChatViewModel chatViewModel = new ChatViewModel();
+        ChatViewModel chatViewModel;
+        RegistrationViewModel registrationViewModel;
         LoginVM loginVM;
+        INetworkManager networkManager;
+
         public MainWindowViewModel()
         {
-            loginVM = new LoginVM(this);
-           CurrentContentVM = loginVM;
-            //MainWindowViewModel & Aboba = (*MainWindowViewModel);
+            networkManager = new NetworkManager();
+            loginVM = new LoginVM(this, networkManager);
+            registrationViewModel = new RegistrationViewModel(this,networkManager);
+            chatViewModel = new ChatViewModel(this,networkManager);
+            ChangeView(ViewType.Login);
         }
     }
 }
