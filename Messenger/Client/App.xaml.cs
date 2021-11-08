@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Client.ViewModels;
 
 namespace Client
 {
@@ -13,5 +14,6 @@ namespace Client
     /// </summary>
     public partial class App : Application
     {
+
     }
 }

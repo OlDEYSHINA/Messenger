@@ -12,26 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Client.BLL;
-using Client.ViewModels;
 
-namespace Client
+namespace Client.View
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for RegistrationView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class RegistrationView : UserControl
     {
-        
-        public MainWindow()
+        public RegistrationView()
         {
             InitializeComponent();
-            DataContext = new MainWindowViewModel ();
-        }
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-
         }
     }
 }

@@ -4,11 +4,22 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
+        xmlns:view="clr-namespace:Client.View"
+        xmlns:viewModel="clr-namespace:Client.ViewModels"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Button x:Name="SendMessageButton" Content="Button" HorizontalAlignment="Left" Height="25" Margin="699,363,0,0" VerticalAlignment="Top" Width="55" Click="SendMessageButton_Click"/>
-        <TextBox x:Name="MessageTextBox" HorizontalAlignment="Left" Height="25" Margin="281,363,0,0" TextWrapping="Wrap" Text="Введите сообщение" VerticalAlignment="Top" Width="391"/>
-
-    </Grid>
+        d:DataContext="{d:DesignInstance viewModel:MainWindowViewModel}"
+        Title="MainWindow" Height="450" Width="800" SizeToContent="WidthAndHeight">
+   <Window.Resources>
+        <DataTemplate DataType="{x:Type viewModel:LoginVM}">
+            <view:LoginView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModel:ChatViewModel}">
+          <view:ChatView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModel:RegistrationViewModel}">
+            <view:RegistrationView/>
+        </DataTemplate>
+        
+    </Window.Resources>
+    <ContentPresenter Content="{Binding CurrentContentVM}"/>
 </Window>
