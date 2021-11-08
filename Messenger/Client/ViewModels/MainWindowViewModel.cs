@@ -1,15 +1,23 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
+using System;
 using System.Threading;
 using System.Windows;
 using Client.BLL.Interfaces;
 using Client.BLL;
 
+using Common.Network;
+using System.ComponentModel;
+
 namespace Client.ViewModels
 {
     class MainWindowViewModel : BindableBase
     {
-
+       
+        ChatViewModel chatViewModel;
+        RegistrationViewModel registrationViewModel;
+        LoginVM loginVM;
+        private ITransport _transport;
         object _currentContentVM;
         public object CurrentContentVM
         {
@@ -65,18 +73,15 @@ namespace Client.ViewModels
                     }
             }
         }
-        ChatViewModel chatViewModel;
-        RegistrationViewModel registrationViewModel;
-        LoginVM loginVM;
-        INetworkManager networkManager;
-
+       
         public MainWindowViewModel()
         {
-            networkManager = new NetworkManager();
-            loginVM = new LoginVM(this, networkManager);
-            registrationViewModel = new RegistrationViewModel(this,networkManager);
-            chatViewModel = new ChatViewModel(this,networkManager);
+            _transport = TransportFactory.Create(TransportType.WebSocket);
+            loginVM = new LoginVM(this, _transport);
+            registrationViewModel = new RegistrationViewModel(this, _transport);
+            chatViewModel = new ChatViewModel(this, _transport);
             ChangeView(ViewType.Login);
         }
+       
     }
 }

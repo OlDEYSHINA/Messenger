@@ -1,16 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common
 {
     public class Message
     {
-        public string UsernameSource;
-        public string UsernameTarget ;
-        public string Text ;
-        public DateTime Time ;
+        private string usernameSource;
+        private string usernameTarget;
+        private string text;
+        private DateTime time;
+
+        public string UsernameSource { get => usernameSource; set => usernameSource = value; }
+        public string UsernameTarget { get => usernameTarget; set => usernameTarget = value; }
+        public string Text { get => text; set => text = value; }
+        public DateTime Time { get => time; set => time = value; }
     }
 }

@@ -1,14 +1,14 @@
 ﻿using Client.BLL.Interfaces;
 using Client.Models;
 using System.Windows;
-using WebSocketSharp;
+
 using Client.ViewModels;
 using System;
 using Newtonsoft.Json;
 
 namespace Client.BLL
 {
-
+    /*
     public class NetworkManager : INetworkManager
     {
         public WebSocket client;
@@ -25,10 +25,11 @@ namespace Client.BLL
 
         public void StartLoginConnection()                          // Область Входа в программу ( передача и получение логина )
         {
-            loginClient = new WebSocket("ws://127.0.0.1:4649/Login");
+            loginClient = new WebSocket("ws://127.0.0.1:65000/Login");
             loginClient.OnMessage += HandleLoginRequest;
             loginClient.Connect();
         }
+        
         public void SendLogin(object data)
         {
             var message = JsonConvert.SerializeObject(data);
@@ -79,6 +80,6 @@ namespace Client.BLL
             //  MessageBox.Show("booba");
         }
 
-    }
+    }*/
 
 }

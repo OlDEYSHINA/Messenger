@@ -37,10 +37,48 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LoginMessage.cs" />
     <Compile Include="Message.cs" />
+    <Compile Include="Network\ITransport.cs" />
+    <Compile Include="Network\Messages\ConnectionRequest.cs" />
+    <Compile Include="Network\Messages\ConnectionResponse.cs" />
+    <Compile Include="Network\Messages\MessageBroadcast.cs" />
+    <Compile Include="Network\Messages\MessageContainer.cs" />
+    <Compile Include="Network\Messages\MessageRequest.cs" />
+    <Compile Include="Network\Packets\BufferPrimitives.cs" />
+    <Compile Include="Network\Packets\ConnectionRequest.cs" />
+    <Compile Include="Network\Packets\ConnectionResponse.cs" />
+    <Compile Include="Network\Packets\MessageBroadcast.cs" />
+    <Compile Include="Network\Packets\MessageRequest.cs" />
+    <Compile Include="Network\Packets\PacketId.cs" />
+    <Compile Include="Network\TransportFactory.cs" />
+    <Compile Include="Network\WsClient.cs" />
+    <Compile Include="Network\WsConnection.cs" />
+    <Compile Include="Network\WsServer.cs" />
+    <Compile Include="Network\[Enums]\ResultCodes.cs" />
+    <Compile Include="Network\[Enums]\TransportType.cs" />
+    <Compile Include="Network\[EventArgs]\ConnectionStateChangedEventArgs.cs" />
+    <Compile Include="Network\[EventArgs]\MessageReceivedEventArgs.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="websocket-sharp, Version=1.0.4.0, Culture=neutral, PublicKeyToken=5660b08a1845a91e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WebSocketSharp-netstandard.1.0.1\lib\net45\websocket-sharp.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

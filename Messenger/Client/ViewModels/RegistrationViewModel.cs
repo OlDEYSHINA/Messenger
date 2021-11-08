@@ -5,6 +5,7 @@ using Prism.Commands;
 using Prism.Mvvm;
 using System.Windows;
 using System.Windows.Media;
+using Common.Network;
 
 namespace Client.ViewModels
 {
@@ -172,12 +173,14 @@ namespace Client.ViewModels
             }
         }
         #endregion //ToolTipText
-
+        private ITransport _transport;
         private bool _usernameIsGood;
         private bool _passwordIsGood;
         private bool _confirmPasswordIsGood;
         private bool _eMailIsGood;
         private string _confirmPassword;
+        MainWindowViewModel _mainWindowViewModel;
+        IRegistrationModel _registrationModel;
         public string Username
         {
             get
@@ -276,14 +279,12 @@ namespace Client.ViewModels
                 }
             }
         }
-        INetworkManager _networkManager;
-        MainWindowViewModel _mainWindowViewModel;
-        IRegistrationModel _registrationModel;
+        
         public DelegateCommand ConfirmRegistration { get; }
 
-        public RegistrationViewModel(MainWindowViewModel mainWindowViewModel,INetworkManager networkManager)
+        public RegistrationViewModel(MainWindowViewModel mainWindowViewModel, ITransport transport)
         {
-            _networkManager = networkManager;
+            _transport = transport;
             _loginToolTipVisibility = Visibility.Collapsed;
             _passwordToolTipVisibility = Visibility.Collapsed;
             _confirmPasswordToolTipVisibility = Visibility.Collapsed;
@@ -301,7 +302,6 @@ namespace Client.ViewModels
         {
             if (_checkAllValidate())
             {
-                _networkManager.SendMessage(Username);
                 _mainWindowViewModel.ChangeView(MainWindowViewModel.ViewType.Login);
             }
         }

@@ -59,9 +59,6 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="websocket-sharp">
-      <HintPath>..\packages\WebSocketSharpFork.1.0.4.0\lib\net35\websocket-sharp.dll</HintPath>
-    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -75,6 +72,7 @@
     <Compile Include="BLL\Interfaces\INetworkManager.cs" />
     <Compile Include="BLL\[EventArgs]\ChatMessageEventArgs.cs" />
     <Compile Include="BLL\[EventArgs]\LoginRequestEventArgs.cs" />
+    <Compile Include="Models\ChatModel.cs" />
     <Compile Include="Models\Interfaces\ILoginModel.cs" />
     <Compile Include="Models\Interfaces\IRegistrationModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
