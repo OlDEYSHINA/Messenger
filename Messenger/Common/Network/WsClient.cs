@@ -5,17 +5,13 @@
 
 namespace Common.Network
 {
+    using _EventArgs_;
+    using Messages;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
     using System;
     using System.Collections.Concurrent;
     using System.Threading;
-
-    using _EventArgs_;
-
-    using Messages;
-
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
-
     using WebSocketSharp;
 
     public class WsClient : ITransport
@@ -23,7 +19,7 @@ namespace Common.Network
         #region Fields
 
         private readonly ConcurrentQueue<MessageContainer> _sendQueue;
-        
+
         private WebSocket _socket;
 
         private int _sending;
@@ -41,7 +37,7 @@ namespace Common.Network
 
         public event EventHandler<ConnectionStateChangedEventArgs> ConnectionStateChanged;
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
-        
+        public event EventHandler<UsersStatusesRequestEventArgs> UsersStatusesRequest;
         #endregion Events
 
         #region Constructors
@@ -79,7 +75,7 @@ namespace Common.Network
             _socket.OnOpen -= OnOpen;
             _socket.OnClose -= OnClose;
             _socket.OnMessage -= OnMessage;
-            
+
             _socket = null;
             _login = string.Empty;
         }
@@ -127,7 +123,7 @@ namespace Common.Network
             string serializedMessages = JsonConvert.SerializeObject(message, settings);
             _socket.SendAsync(serializedMessages, SendCompleted);
         }
-        
+
         private void OnMessage(object sender, MessageEventArgs e)
         {
             if (!e.IsText)
@@ -149,6 +145,10 @@ namespace Common.Network
                 case nameof(MessageBroadcast):
                     var messageBroadcast = ((JObject)container.Payload).ToObject(typeof(MessageBroadcast)) as MessageBroadcast;
                     MessageReceived?.Invoke(this, new MessageReceivedEventArgs(_login, messageBroadcast.Message));
+                    break;
+                case nameof(UserStatusBroadcast):
+                    var userStatusBroadcast = ((JObject)container.Payload).ToObject(typeof(UserStatusBroadcast)) as UserStatusBroadcast;
+                    UsersStatusesRequest?.Invoke(this, new UsersStatusesRequestEventArgs(userStatusBroadcast.ListOfUsersStatuses));
                     break;
             }
         }

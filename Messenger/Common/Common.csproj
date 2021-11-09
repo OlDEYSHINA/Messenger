@@ -40,6 +40,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Network\Messages\UserStatusBroadcast.cs" />
+    <Compile Include="Network\Packets\User.cs" />
     <Compile Include="LoginMessage.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Network\ITransport.cs" />
@@ -62,6 +64,9 @@
     <Compile Include="Network\[Enums]\TransportType.cs" />
     <Compile Include="Network\[EventArgs]\ConnectionStateChangedEventArgs.cs" />
     <Compile Include="Network\[EventArgs]\MessageReceivedEventArgs.cs" />
+    <Compile Include="Network\Packets\UserStatus.cs" />
+    <Compile Include="Network\UserStatusManager.cs" />
+    <Compile Include="Network\[EventArgs]\UsersStatusesRequestEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">

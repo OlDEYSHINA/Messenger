@@ -1,5 +1,4 @@
-﻿using Client.BLL.Interfaces;
-using Client.Models;
+﻿using Client.Models;
 using System.Windows;
 
 using Client.ViewModels;

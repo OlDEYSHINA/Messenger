@@ -65,6 +65,7 @@ namespace Common.Network
             _sendQueue.Enqueue(container);
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 SendImpl();
+          
         }
 
         public void Close()
@@ -90,7 +91,6 @@ namespace Common.Network
                 _server.HandleMessage(Id, message);
             }
         }
-        
         private void SendCompleted(bool completed)
         {
             // При отправке произошла ошибка.

@@ -69,7 +69,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="BLL\NetworkManager.cs" />
-    <Compile Include="BLL\Interfaces\INetworkManager.cs" />
     <Compile Include="BLL\[EventArgs]\ChatMessageEventArgs.cs" />
     <Compile Include="BLL\[EventArgs]\LoginRequestEventArgs.cs" />
     <Compile Include="Models\ChatModel.cs" />
@@ -155,6 +154,9 @@
       <Project>{40306c4e-aee0-4bc6-b792-dde3aba4e9d8}</Project>
       <Name>Common</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="BLL\Interfaces\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

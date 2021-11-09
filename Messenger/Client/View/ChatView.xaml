@@ -11,21 +11,18 @@
              d:DataContext="{d:DesignInstance viewModels:ChatViewModel}">
     
     <Grid>
-        <ListBox HorizontalAlignment="Left" Height="388" VerticalAlignment="Top" Width="234" Margin="10,10,0,0"/>
-        <TextBox HorizontalAlignment="Left" Height="19" Margin="320,421,0,0" TextWrapping="Wrap" Text="{Binding Message}" VerticalAlignment="Top" Width="365"/>
+        <ListView ItemsSource="{Binding UsersStatusesCollection}"  HorizontalAlignment="Left" 
+                 Height="388" VerticalAlignment="Top" Width="234" Margin="10,10,0,0">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Width="100">Имя</GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=IsOnline}">Статус</GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+            <TextBox HorizontalAlignment="Left" Height="19" Margin="320,421,0,0" TextWrapping="Wrap" Text="{Binding Message}" VerticalAlignment="Top" Width="365"/>
         <Button Content="Button" Command="{Binding SendMessage}" HorizontalAlignment="Left" Height="19" Margin="701,421,10,10" VerticalAlignment="Top" Width="89"/>
         <ListView ItemsSource="{Binding ChatMessages}" HorizontalAlignment="Left" Height="388" Margin="320,10,0,0" VerticalAlignment="Top" Width="470">
-            <!--<ListView.ItemTemplate> 
-                <DataTemplate>
-                    <StackPanel>
-                        <TextBlock Text="{Binding Path=UsernameSource}" />
-                        <TextBlock Text="{Binding Path=Text}" />
-                        <TextBlock Text="{Binding Path=Time.Date}"/>
-                    </StackPanel>
-                </DataTemplate>
-                
-            </ListView.ItemTemplate>-->
-
             <ListView.View>
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=UsernameSource}" Width="100">Имя</GridViewColumn>

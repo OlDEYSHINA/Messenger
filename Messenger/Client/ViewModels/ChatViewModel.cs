@@ -1,5 +1,5 @@
 ﻿using Client.BLL;
-using Client.BLL.Interfaces;
+
 using Client.Models;
 using Common;
 using Common.Network;
@@ -8,6 +8,7 @@ using Prism.Mvvm;
 using System.Collections.ObjectModel;
 using System.Windows;
 using Newtonsoft.Json;
+using System;
 
 namespace Client.ViewModels
 {
@@ -26,6 +27,18 @@ namespace Client.ViewModels
             set
             {
                 SetProperty(ref _chatModel.ChatMessages, value);
+            }
+        }
+
+        public ObservableCollection<UserStatus> UsersStatusesCollection
+        {
+            get
+            {
+                return _chatModel.UserStatuses;
+            }
+            set
+            {
+                SetProperty(ref _chatModel.UserStatuses, value);
             }
         }
 
@@ -56,6 +69,7 @@ namespace Client.ViewModels
         {
             _transport = transport;
             _transport.MessageReceived += HandleMessageReceived;
+            _transport.UsersStatusesRequest += HandleUsersStatusesRequest;
             _chatModel = new ChatModel();
       //      _chatModel.NewMessage(new Common.Message { Text = "test", Time = System.DateTime.Now, UsernameTarget = "all", UsernameSource = "Biba" });
          
@@ -64,8 +78,18 @@ namespace Client.ViewModels
 
         private void HandleMessageReceived(object sender, MessageReceivedEventArgs e)
         {
-            
-            var incomeMessage = JsonConvert.DeserializeObject<Message>(e.Message);
+            Message incomeMessage=null;
+            try
+            {
+                  incomeMessage = JsonConvert.DeserializeObject<Message>(e.Message);
+            }
+            catch
+            {
+                if (incomeMessage==null)
+                {
+                    incomeMessage = new Message { Text = e.Message,UsernameTarget = "all", Time = DateTime.Now, UsernameSource = "server" };
+                }
+            }
             _chatModel.NewMessage(new Common.Message { Text = incomeMessage.Text, Time = incomeMessage.Time, UsernameTarget = incomeMessage.UsernameTarget, UsernameSource = incomeMessage.UsernameSource });
         }
 
@@ -81,6 +105,11 @@ namespace Client.ViewModels
         public void SaveToList(object sender, ChatMessageEventArgs e)
         {
             MessageBox.Show(e.Text);
+        }
+        private void HandleUsersStatusesRequest(object sender, UsersStatusesRequestEventArgs e)
+        {
+            UsersStatusesCollection = new ObservableCollection<UserStatus>(e.UsersStatuses);
+            
         }
     }
 }

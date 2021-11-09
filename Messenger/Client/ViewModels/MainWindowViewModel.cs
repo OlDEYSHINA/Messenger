@@ -3,7 +3,7 @@ using Prism.Mvvm;
 using System;
 using System.Threading;
 using System.Windows;
-using Client.BLL.Interfaces;
+
 using Client.BLL;
 
 using Common.Network;

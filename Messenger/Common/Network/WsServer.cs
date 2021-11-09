@@ -5,18 +5,15 @@
 
 namespace Common.Network
 {
-    using System;
-    using System.Collections.Concurrent;
-    using System.Linq;
-    using System.Net;
-
     using _EventArgs_;
-
     using Messages;
-
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
-
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
     using WebSocketSharp.Server;
 
     public class WsServer
@@ -27,6 +24,8 @@ namespace Common.Network
         private readonly ConcurrentDictionary<Guid, WsConnection> _connections;
 
         private WebSocketServer _server;
+        private List<UserStatus> _usersStatuses = new List<UserStatus>();
+        private List<User> _users = new List<User>();
 
         #endregion Fields
 
@@ -73,8 +72,15 @@ namespace Common.Network
             }
 
             _connections.Clear();
+            
         }
-        public void Send(string text,string sourceUser,string targetUser)
+        public void SendTo(Guid id,string message)
+        {
+            _connections.TryGetValue(id,out WsConnection connection);
+            var messageBroadcast = new MessageBroadcast(message).GetContainer();
+            connection.Send(messageBroadcast);
+        }
+        public void Send(string text, string sourceUser, string targetUser)
         {
             Message nonJsonMessage = new Message { Text = text, UsernameSource = sourceUser, UsernameTarget = targetUser, Time = DateTime.Now };
             var message = JsonConvert.SerializeObject(nonJsonMessage);
@@ -85,9 +91,10 @@ namespace Common.Network
                 connection.Value.Send(messageBroadcast);
             }
         }
+        
         public void Send(string message)
         {
-            
+
             var messageBroadcast = new MessageBroadcast(message).GetContainer();
 
             foreach (var connection in _connections)
@@ -115,8 +122,12 @@ namespace Common.Network
                     else
                     {
                         connection.Login = connectionRequest.Login;
+                        AddToLists(connection.Login, clientId);
                         connection.Send(connectionResponse.GetContainer());
                         ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(connection.Login, true));
+                        var usersStatuses = new UserStatusBroadcast(_usersStatuses).GetContainer();
+                        connection.Send(usersStatuses);
+                        Console.WriteLine("Отправлен список");
                     }
                     break;
                 case nameof(MessageRequest):
@@ -129,12 +140,40 @@ namespace Common.Network
         internal void AddConnection(WsConnection connection)
         {
             _connections.TryAdd(connection.Id, connection);
+
         }
 
         internal void FreeConnection(Guid connectionId)
         {
+            DeleteFromLists(connectionId);
             if (_connections.TryRemove(connectionId, out WsConnection connection) && !string.IsNullOrEmpty(connection.Login))
                 ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(connection.Login, false));
+        }
+
+        protected void AddToLists(string login,Guid id)
+        {
+            User addUser = new User(login, id);
+            _users.Add(addUser);
+            if (_usersStatuses.Find(x => x.Name == login) == null)
+            {
+                UserStatus userStatus = new UserStatus(login, true);
+                _usersStatuses.Add(userStatus);
+            }
+            else
+            {
+                _usersStatuses.Find(x => x.Name == login).IsOnline = true;
+            }
+        }
+
+        /// <summary>
+        /// Удаление пользователя из листа сервера и смена состояния в листе клиента
+        /// </summary>
+        /// <param name="id">Guid пользователя</param>
+        protected void DeleteFromLists(Guid id)
+        {
+            var findedUser = _users.Find(x => x.ID == id);
+            _users.Remove(findedUser);
+            _usersStatuses.Find(x => x.Name == findedUser.Name).IsOnline=false;
         }
 
         #endregion Methods
