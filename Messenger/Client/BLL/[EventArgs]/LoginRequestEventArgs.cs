@@ -11,7 +11,6 @@ namespace Client.BLL
         public string Result { get; set; }
         public LoginRequestEventArgs(string result)
         {
-            
             Result = result;
         }
     }

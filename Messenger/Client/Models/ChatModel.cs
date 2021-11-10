@@ -6,7 +6,7 @@ namespace Client.Models
     class ChatModel
     {
         public ObservableCollection<Message> ChatMessages = new ObservableCollection<Message>();
-        public ObservableCollection<UserStatus> UserStatuses = new ObservableCollection<UserStatus>();
+        public ObservableCollection<UserState> UserStatuses = new ObservableCollection<UserState>();
 
         public void NewMessage(Message message)
         {

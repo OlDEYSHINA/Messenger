@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
 
 namespace Client.ViewModels
 {
@@ -30,7 +31,7 @@ namespace Client.ViewModels
             }
         }
 
-        public ObservableCollection<UserStatus> UsersStatusesCollection
+        public ObservableCollection<UserState> UsersStatusesCollection
         {
             get
             {
@@ -69,13 +70,27 @@ namespace Client.ViewModels
         {
             _transport = transport;
             _transport.MessageReceived += HandleMessageReceived;
-            _transport.UsersStatusesRequest += HandleUsersStatusesRequest;
+            _transport.UsersStatusesReceived += HandleUsersStatusesRequest;
+            _transport.UserStateChanged += HandleUserStateChange;
             _chatModel = new ChatModel();
-      //      _chatModel.NewMessage(new Common.Message { Text = "test", Time = System.DateTime.Now, UsernameTarget = "all", UsernameSource = "Biba" });
-         
             SendMessage = new DelegateCommand(SendMessageToServer, () => true);
         }
-
+        private void HandleUserStateChange(object sender, UserStateChangedEventArgs e)
+        {
+            var found = UsersStatusesCollection.FirstOrDefault(x => x.Name == e.user.Name);
+            if (found != null)
+            {
+                var foundIndex = UsersStatusesCollection.IndexOf(found);
+                App.Current.Dispatcher.Invoke(() => { UsersStatusesCollection.RemoveAt(foundIndex);
+                    UsersStatusesCollection.Insert(foundIndex, e.user);
+                    found.IsOnline = e.user.IsOnline;
+                });
+            }
+            else
+            {
+                App.Current.Dispatcher.Invoke(() => UsersStatusesCollection.Add(e.user));
+            }
+        }
         private void HandleMessageReceived(object sender, MessageReceivedEventArgs e)
         {
             Message incomeMessage=null;
@@ -98,7 +113,6 @@ namespace Client.ViewModels
             if (!string.IsNullOrEmpty(Message))
             {
                 _transport?.Send(Message);
-              //  ChatMessages.Add(new Common.Message { Text = _message, Time = System.DateTime.Now, UsernameTarget = "all", UsernameSource = "aboba" });
                 Message = null;
             }
         }
@@ -106,10 +120,9 @@ namespace Client.ViewModels
         {
             MessageBox.Show(e.Text);
         }
-        private void HandleUsersStatusesRequest(object sender, UsersStatusesRequestEventArgs e)
+        private void HandleUsersStatusesRequest(object sender, UsersStatusesReceivedEventArgs e)
         {
-            UsersStatusesCollection = new ObservableCollection<UserStatus>(e.UsersStatuses);
-            
+            UsersStatusesCollection = new ObservableCollection<UserState>(e.UsersStatuses);
         }
     }
 }

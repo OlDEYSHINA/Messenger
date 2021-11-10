@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace Common.Network.Messages
 {
-    public class UserStatusBroadcast
+    class UserStatusChangeBroadcast
     {
         #region Properties
 
-        public List<UserStatus> ListOfUsersStatuses { get; set; }
+        public UserState User { get; set; }
 
         #endregion Properties
-        
+
         #region Constructors
-        public UserStatusBroadcast(List <UserStatus>incomeList)
+        public UserStatusChangeBroadcast(UserState incomeUser)
         {
-            ListOfUsersStatuses = incomeList;
+            User = incomeUser;
         }
         #endregion Constructors
 
@@ -26,7 +26,7 @@ namespace Common.Network.Messages
         {
             var container = new MessageContainer
             {
-                Identifier = nameof(UserStatusBroadcast),
+                Identifier = nameof(UserStatusChangeBroadcast),
                 Payload = this
             };
 

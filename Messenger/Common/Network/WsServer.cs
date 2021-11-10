@@ -24,8 +24,7 @@ namespace Common.Network
         private readonly ConcurrentDictionary<Guid, WsConnection> _connections;
 
         private WebSocketServer _server;
-        private List<UserStatus> _usersStatuses = new List<UserStatus>();
-        private List<User> _users = new List<User>();
+        private UsersListsManager _usersLists;
 
         #endregion Fields
 
@@ -51,12 +50,12 @@ namespace Common.Network
         public void Start()
         {
             _server = new WebSocketServer(_listenAddress.Address, _listenAddress.Port, false);
-            //_server.AddWebSocketService("/", () => new WsConnection(this));
             _server.AddWebSocketService<WsConnection>("/",
                 client =>
                 {
                     client.AddServer(this);
                 });
+            _usersLists = new UsersListsManager(this);
             _server.Start();
         }
 
@@ -122,12 +121,19 @@ namespace Common.Network
                     else
                     {
                         connection.Login = connectionRequest.Login;
-                        AddToLists(connection.Login, clientId);
+                        _usersLists.AddToLists(connection.Login, clientId);
+                     
                         connection.Send(connectionResponse.GetContainer());
                         ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(connection.Login, true));
-                        var usersStatuses = new UserStatusBroadcast(_usersStatuses).GetContainer();
+                        var usersStatuses = new UsersStatusesBroadcast(_usersLists.GetUsersStatuses()).GetContainer();
                         connection.Send(usersStatuses);
                         Console.WriteLine("Отправлен список");
+                        UserState newUser = new UserState(connection.Login, true); // отправка изменений о состоянии пользователя
+                        UserStatusChangeBroadcast newChange = new UserStatusChangeBroadcast(newUser);
+                        foreach (var connects in _connections)
+                        {
+                            connects.Value.Send(newChange.GetContainer());
+                        }
                     }
                     break;
                 case nameof(MessageRequest):
@@ -145,35 +151,17 @@ namespace Common.Network
 
         internal void FreeConnection(Guid connectionId)
         {
-            DeleteFromLists(connectionId);
+            // отправка изменений о состоянии пользователя
+            UserState newUser = new UserState(_usersLists.GetUserName(connectionId), false);
+            UserStatusChangeBroadcast newChange = new UserStatusChangeBroadcast(newUser);
+            foreach (var connects in _connections)
+            {
+                connects.Value.Send(newChange.GetContainer());
+            }
+            _usersLists.DeleteFromLists(connectionId);
+
             if (_connections.TryRemove(connectionId, out WsConnection connection) && !string.IsNullOrEmpty(connection.Login))
                 ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(connection.Login, false));
-        }
-
-        protected void AddToLists(string login,Guid id)
-        {
-            User addUser = new User(login, id);
-            _users.Add(addUser);
-            if (_usersStatuses.Find(x => x.Name == login) == null)
-            {
-                UserStatus userStatus = new UserStatus(login, true);
-                _usersStatuses.Add(userStatus);
-            }
-            else
-            {
-                _usersStatuses.Find(x => x.Name == login).IsOnline = true;
-            }
-        }
-
-        /// <summary>
-        /// Удаление пользователя из листа сервера и смена состояния в листе клиента
-        /// </summary>
-        /// <param name="id">Guid пользователя</param>
-        protected void DeleteFromLists(Guid id)
-        {
-            var findedUser = _users.Find(x => x.ID == id);
-            _users.Remove(findedUser);
-            _usersStatuses.Find(x => x.Name == findedUser.Name).IsOnline=false;
         }
 
         #endregion Methods

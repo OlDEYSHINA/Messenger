@@ -37,7 +37,8 @@ namespace Common.Network
 
         public event EventHandler<ConnectionStateChangedEventArgs> ConnectionStateChanged;
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
-        public event EventHandler<UsersStatusesRequestEventArgs> UsersStatusesRequest;
+        public event EventHandler<UsersStatusesReceivedEventArgs> UsersStatusesReceived;
+        public event EventHandler<UserStateChangedEventArgs> UserStateChanged;
         #endregion Events
 
         #region Constructors
@@ -146,12 +147,16 @@ namespace Common.Network
                     var messageBroadcast = ((JObject)container.Payload).ToObject(typeof(MessageBroadcast)) as MessageBroadcast;
                     MessageReceived?.Invoke(this, new MessageReceivedEventArgs(_login, messageBroadcast.Message));
                     break;
-                case nameof(UserStatusBroadcast):
-                    var userStatusBroadcast = ((JObject)container.Payload).ToObject(typeof(UserStatusBroadcast)) as UserStatusBroadcast;
-                    UsersStatusesRequest?.Invoke(this, new UsersStatusesRequestEventArgs(userStatusBroadcast.ListOfUsersStatuses));
+                case nameof(UsersStatusesBroadcast):
+                    var usersStatusBroadcast = ((JObject)container.Payload).ToObject(typeof(UsersStatusesBroadcast)) as UsersStatusesBroadcast;
+                    UsersStatusesReceived?.Invoke(this, new UsersStatusesReceivedEventArgs(usersStatusBroadcast.ListOfUsersStatuses));
+                    break;
+                case nameof(UserStatusChangeBroadcast):
+                    var userStatusBroadcast = ((JObject)container.Payload).ToObject(typeof(UserStateChangedEventArgs)) as UserStateChangedEventArgs;
+                    UserStateChanged?.Invoke(this, new UserStateChangedEventArgs(userStatusBroadcast.user));
                     break;
             }
-        }
+        } 
 
         private void OnClose(object sender, CloseEventArgs e)
         {
