@@ -11,7 +11,6 @@ namespace Common.Network
     using Newtonsoft.Json.Linq;
     using System;
     using System.Collections.Concurrent;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Net;
     using WebSocketSharp.Server;
@@ -71,26 +70,32 @@ namespace Common.Network
             }
 
             _connections.Clear();
-            
+
         }
-        public void SendTo(Guid id,string message)
-        {
-            _connections.TryGetValue(id,out WsConnection connection);
-            var messageBroadcast = new MessageBroadcast(message).GetContainer();
-            connection.Send(messageBroadcast);
-        }
+       
         public void Send(string text, string sourceUser, string targetUser)
         {
             Message nonJsonMessage = new Message { Text = text, UsernameSource = sourceUser, UsernameTarget = targetUser, Time = DateTime.Now };
             var message = JsonConvert.SerializeObject(nonJsonMessage);
             var messageBroadcast = new MessageBroadcast(message).GetContainer();
-
-            foreach (var connection in _connections)
+            if (targetUser == "Global")
             {
-                connection.Value.Send(messageBroadcast);
+                foreach (var connection in _connections)
+                {
+                    connection.Value.Send(messageBroadcast);
+                }
+            }
+            else
+            {
+                var guidTarget = _usersLists.GetUserGuid(targetUser);
+                var connectionTarget = _connections.FirstOrDefault(x => x.Key == guidTarget).Value;
+                connectionTarget.Send(messageBroadcast);
+                var guidSource = _usersLists.GetUserGuid(sourceUser);
+                var connectionSource = _connections.FirstOrDefault(x => x.Key == guidSource).Value;
+                connectionSource.Send(messageBroadcast);
             }
         }
-        
+
         public void Send(string message)
         {
 
@@ -122,7 +127,7 @@ namespace Common.Network
                     {
                         connection.Login = connectionRequest.Login;
                         _usersLists.AddToLists(connection.Login, clientId);
-                     
+
                         connection.Send(connectionResponse.GetContainer());
                         ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(connection.Login, true));
                         var usersStatuses = new UsersStatusesBroadcast(_usersLists.GetUsersStatuses()).GetContainer();

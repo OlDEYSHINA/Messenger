@@ -20,6 +20,7 @@ namespace Common.Network
         public UsersListsManager(WsServer server)
         {
             _wsServer = server;
+            _usersStatuses.Add(new UserState("Global", true));
         }
 
         #endregion Constructors
@@ -56,9 +57,10 @@ namespace Common.Network
             return _usersStatuses;
         }
 
-        public List<User> GetUsersGuid()
+        public Guid GetUserGuid(string name)
         {
-            return _usersGuid;
+            var finded = _usersGuid.Find(x => x.Name == name);
+            return finded.ID;
         }
         public string GetUserName(Guid id)
         {

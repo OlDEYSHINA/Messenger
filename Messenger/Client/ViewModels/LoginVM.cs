@@ -207,6 +207,8 @@ namespace Client.ViewModels
             else
             {
                 EnableLoginView = false;
+                _login.Username = null;
+                _login.Password = null;
                 ErrorLabel="Клиент отключен от сервера.";
                 _mainWindowViewModel.ChangeView(MainWindowViewModel.ViewType.Login);
                // SetDefaultButtonState();

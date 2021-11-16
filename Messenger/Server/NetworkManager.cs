@@ -4,8 +4,10 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Common;
 using Common.Network;
 using Common.Network._EventArgs_;
+using Newtonsoft.Json;
 
 namespace Server
 {
@@ -38,15 +40,16 @@ namespace Server
             string message = $"Клиент '{e.ClientName}' отправил сообщение '{e.Message}'.";
 
             Console.WriteLine(message);
-            
-            _wsServer.Send(e.Message,e.ClientName,"all");
+            // _wsServer.SendTo
+            var income = JsonConvert.DeserializeObject<Message>(e.Message);
+            _wsServer.Send(income.Text,income.UsernameSource,income.UsernameTarget);
         }
 
         private void HandleConnectionStateChanged(object sender, ConnectionStateChangedEventArgs e)
         {
             string clientState = e.Connected ? "подключен" : "отключен";
             string message = $"Клиент '{e.ClientName}' {clientState}.";
-
+            
             Console.WriteLine(message);
 
             _wsServer.Send(message);

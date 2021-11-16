@@ -59,10 +59,13 @@ namespace Client.ViewModels
                 case ViewType.Login:
                     {
                         CurrentContentVM = loginVM;
+                        
                         break;
                     }
                 case ViewType.Chat:
                     {
+                        
+                        chatViewModel = new ChatViewModel(this, _transport,loginVM.UsernameLogin);
                         CurrentContentVM = chatViewModel;
                         break;
                     }
@@ -79,7 +82,7 @@ namespace Client.ViewModels
             _transport = TransportFactory.Create(TransportType.WebSocket);
             loginVM = new LoginVM(this, _transport);
             registrationViewModel = new RegistrationViewModel(this, _transport);
-            chatViewModel = new ChatViewModel(this, _transport);
+            
             ChangeView(ViewType.Login);
         }
        
