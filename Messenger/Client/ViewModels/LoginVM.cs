@@ -1,5 +1,6 @@
 ﻿using Client.BLL;
 using Client.Models;
+
 using Common.Network;
 using Common.Network._EventArgs_;
 using Prism.Commands;
@@ -187,6 +188,7 @@ namespace Client.ViewModels
             }
         }
 
+       
         private void HandleConnectionStateChanged(object sender, ConnectionStateChangedEventArgs e)
         {
             if (e.Connected)
@@ -205,7 +207,10 @@ namespace Client.ViewModels
             else
             {
                 EnableLoginView = false;
+                _login.Username = null;
+                _login.Password = null;
                 ErrorLabel="Клиент отключен от сервера.";
+                _mainWindowViewModel.ChangeView(MainWindowViewModel.ViewType.Login);
                // SetDefaultButtonState();
             }
         }

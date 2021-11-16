@@ -11,5 +11,7 @@ namespace Common.Network.Packets
         ConnectionResponse = 0x02,
         MessageRequest = 0x03,
         MessageBroadcast = 0x04,
+        UserStatusBroadcast = 0x05,
+        UserStatusChangeBroadcast = 0x06,
     }
 }

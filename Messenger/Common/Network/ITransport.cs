@@ -15,6 +15,8 @@ namespace Common.Network
 
         event EventHandler<ConnectionStateChangedEventArgs> ConnectionStateChanged;
         event EventHandler<MessageReceivedEventArgs> MessageReceived;
+        event EventHandler<UsersStatusesReceivedEventArgs> UsersStatusesReceived;
+        event EventHandler<UserStateChangedEventArgs> UserStateChanged;
 
         #endregion Events
 

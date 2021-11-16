@@ -40,6 +40,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Network\Messages\UsersStatusesBroadcast.cs" />
+    <Compile Include="Network\Messages\UserStatusChangeBroadcast.cs" />
+    <Compile Include="Network\Packets\User.cs" />
     <Compile Include="LoginMessage.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Network\ITransport.cs" />
@@ -55,6 +58,7 @@
     <Compile Include="Network\Packets\MessageRequest.cs" />
     <Compile Include="Network\Packets\PacketId.cs" />
     <Compile Include="Network\TransportFactory.cs" />
+    <Compile Include="Network\UsersListsManager.cs" />
     <Compile Include="Network\WsClient.cs" />
     <Compile Include="Network\WsConnection.cs" />
     <Compile Include="Network\WsServer.cs" />
@@ -62,6 +66,9 @@
     <Compile Include="Network\[Enums]\TransportType.cs" />
     <Compile Include="Network\[EventArgs]\ConnectionStateChangedEventArgs.cs" />
     <Compile Include="Network\[EventArgs]\MessageReceivedEventArgs.cs" />
+    <Compile Include="Network\Packets\UserState.cs" />
+    <Compile Include="Network\[EventArgs]\UsersStatusesReceivedEventArgs.cs" />
+    <Compile Include="Network\[EventArgs]\UserStateChangedEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">

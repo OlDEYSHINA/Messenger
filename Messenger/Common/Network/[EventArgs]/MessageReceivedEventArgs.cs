@@ -17,7 +17,7 @@ namespace Common.Network
 
         #region Constructors
 
-        public MessageReceivedEventArgs(string clientName, string message)
+        public MessageReceivedEventArgs(string clientName,string message)
         {
             ClientName = clientName;
             Message = message;

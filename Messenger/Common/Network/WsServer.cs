@@ -5,18 +5,14 @@
 
 namespace Common.Network
 {
+    using _EventArgs_;
+    using Messages;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
     using System;
     using System.Collections.Concurrent;
     using System.Linq;
     using System.Net;
-
-    using _EventArgs_;
-
-    using Messages;
-
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
-
     using WebSocketSharp.Server;
 
     public class WsServer
@@ -27,6 +23,7 @@ namespace Common.Network
         private readonly ConcurrentDictionary<Guid, WsConnection> _connections;
 
         private WebSocketServer _server;
+        private UsersListsManager _usersLists;
 
         #endregion Fields
 
@@ -52,12 +49,12 @@ namespace Common.Network
         public void Start()
         {
             _server = new WebSocketServer(_listenAddress.Address, _listenAddress.Port, false);
-            //_server.AddWebSocketService("/", () => new WsConnection(this));
             _server.AddWebSocketService<WsConnection>("/",
                 client =>
                 {
                     client.AddServer(this);
                 });
+            _usersLists = new UsersListsManager(this);
             _server.Start();
         }
 
@@ -73,21 +70,35 @@ namespace Common.Network
             }
 
             _connections.Clear();
+
         }
-        public void Send(string text,string sourceUser,string targetUser)
+       
+        public void Send(string text, string sourceUser, string targetUser)
         {
             Message nonJsonMessage = new Message { Text = text, UsernameSource = sourceUser, UsernameTarget = targetUser, Time = DateTime.Now };
             var message = JsonConvert.SerializeObject(nonJsonMessage);
             var messageBroadcast = new MessageBroadcast(message).GetContainer();
-
-            foreach (var connection in _connections)
+            if (targetUser == "Global")
             {
-                connection.Value.Send(messageBroadcast);
+                foreach (var connection in _connections)
+                {
+                    connection.Value.Send(messageBroadcast);
+                }
+            }
+            else
+            {
+                var guidTarget = _usersLists.GetUserGuid(targetUser);
+                var connectionTarget = _connections.FirstOrDefault(x => x.Key == guidTarget).Value;
+                connectionTarget.Send(messageBroadcast);
+                var guidSource = _usersLists.GetUserGuid(sourceUser);
+                var connectionSource = _connections.FirstOrDefault(x => x.Key == guidSource).Value;
+                connectionSource.Send(messageBroadcast);
             }
         }
+
         public void Send(string message)
         {
-            
+
             var messageBroadcast = new MessageBroadcast(message).GetContainer();
 
             foreach (var connection in _connections)
@@ -115,8 +126,19 @@ namespace Common.Network
                     else
                     {
                         connection.Login = connectionRequest.Login;
+                        _usersLists.AddToLists(connection.Login, clientId);
+
                         connection.Send(connectionResponse.GetContainer());
                         ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(connection.Login, true));
+                        var usersStatuses = new UsersStatusesBroadcast(_usersLists.GetUsersStatuses()).GetContainer();
+                        connection.Send(usersStatuses);
+                        Console.WriteLine("Отправлен список");
+                        UserState newUser = new UserState(connection.Login, true); // отправка изменений о состоянии пользователя
+                        UserStatusChangeBroadcast newChange = new UserStatusChangeBroadcast(newUser);
+                        foreach (var connects in _connections)
+                        {
+                            connects.Value.Send(newChange.GetContainer());
+                        }
                     }
                     break;
                 case nameof(MessageRequest):
@@ -129,10 +151,20 @@ namespace Common.Network
         internal void AddConnection(WsConnection connection)
         {
             _connections.TryAdd(connection.Id, connection);
+
         }
 
         internal void FreeConnection(Guid connectionId)
         {
+            // отправка изменений о состоянии пользователя
+            UserState newUser = new UserState(_usersLists.GetUserName(connectionId), false);
+            UserStatusChangeBroadcast newChange = new UserStatusChangeBroadcast(newUser);
+            foreach (var connects in _connections)
+            {
+                connects.Value.Send(newChange.GetContainer());
+            }
+            _usersLists.DeleteFromLists(connectionId);
+
             if (_connections.TryRemove(connectionId, out WsConnection connection) && !string.IsNullOrEmpty(connection.Login))
                 ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(connection.Login, false));
         }
