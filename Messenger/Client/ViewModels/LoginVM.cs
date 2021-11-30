@@ -2,6 +2,7 @@
 using Client.Models;
 
 using Common.Network;
+using Common.Network._Enums_;
 using Common.Network._EventArgs_;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -134,6 +135,7 @@ namespace Client.ViewModels
         {
             _transport = transport;
             _mainWindowViewModel = mainWindowViewModel;
+            _transport.LoginResponseReceived += HandleLoginReceived;
             _login = new LoginModel();
             SendCommand = new DelegateCommand(ConfirmLogin, () => true);
             Registration = new DelegateCommand(ShowRegistrationView, () => true);
@@ -146,6 +148,7 @@ namespace Client.ViewModels
             ServerPort = "65000";
 #endif
         }
+
         private void HandleButtonStartConnectionClick()
         {
             try
@@ -161,17 +164,7 @@ namespace Client.ViewModels
                // SetDefaultButtonState();
             }
         }
-        public void LoginRequest(object sender, LoginRequestEventArgs e)
-        {
-            if (e.Result == "Confirm")
-            {
-
-            }
-            else
-            {
-                ErrorLabel = e.Result;
-            }
-        }
+       
         public void ConfirmLogin()
         {
 
@@ -179,8 +172,8 @@ namespace Client.ViewModels
             {
                 _login.Username = _username;
                 _login.Password = _password;
-                
-                _transport?.Login(_login.Username);
+                EnableLoginView = false;
+                _transport?.Login(_login.Username,_login.Password);
             }
             else
             {
@@ -188,28 +181,48 @@ namespace Client.ViewModels
             }
         }
 
-       
+        private void HandleLoginReceived(object sender,LoginResponseReceivedEventArgs e)
+        {
+            if (e.LoginResult == LoginResult.Ok)
+            {
+                _mainWindowViewModel.ChangeView(MainWindowViewModel.ViewType.Chat);
+            }
+            else if(e.LoginResult == LoginResult.UnknownUser)
+            {
+                ErrorLabel = "Неизвестный пользователь";
+            }
+            else if (e.LoginResult == LoginResult.UnknownPassword)
+            {
+                ErrorLabel = "Неправильный пароль";
+            }
+            else
+            {
+                ErrorLabel = "Неизвестная ошибка";
+            }
+
+        }
+
+
         private void HandleConnectionStateChanged(object sender, ConnectionStateChangedEventArgs e)
         {
+            ErrorLabel = e.Reason;
             if (e.Connected)
             {
                 if (string.IsNullOrEmpty(e.ClientName))
                 {
                     EnableLoginView = true;
-                    ErrorLabel = "Авторизуйтеся, чтобы отправлять сообщения.";
                 }
                 else
                 {
-                    ErrorLabel = "Авторизация успешна.";
                     _mainWindowViewModel.ChangeView(MainWindowViewModel.ViewType.Chat);
                 }
             }
             else
             {
-                EnableLoginView = false;
+                
+                EnableLoginView = true;
                 _login.Username = null;
                 _login.Password = null;
-                ErrorLabel="Клиент отключен от сервера.";
                 _mainWindowViewModel.ChangeView(MainWindowViewModel.ViewType.Login);
                // SetDefaultButtonState();
             }

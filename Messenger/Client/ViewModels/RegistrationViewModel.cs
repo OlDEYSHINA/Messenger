@@ -1,25 +1,23 @@
-﻿
-using Client.BLL;
-using Client.Models;
+﻿using Client.Models;
+using Common.Network;
+using Common.Network._Enums_;
+using Common.Network._EventArgs_;
 using Prism.Commands;
 using Prism.Mvvm;
 using System.Windows;
 using System.Windows.Media;
-using Common.Network;
 
 namespace Client.ViewModels
 {
 
     class RegistrationViewModel : BindableBase
     {
-        
+
         #region Visibility
 
         private Visibility _loginToolTipVisibility;
         private Visibility _passwordToolTipVisibility;
         private Visibility _confirmPasswordToolTipVisibility;
-        private Visibility _eMailToolTipVisibility;
-
         public Visibility LoginToolTipVisibility
         {
             get
@@ -51,17 +49,6 @@ namespace Client.ViewModels
             set
             {
                 SetProperty(ref _confirmPasswordToolTipVisibility, value);
-            }
-        }
-        public Visibility EMailToolTipVisibility
-        {
-            get
-            {
-                return _eMailToolTipVisibility;
-            }
-            set
-            {
-                SetProperty(ref _eMailToolTipVisibility, value);
             }
         }
         #endregion //Visibility
@@ -106,18 +93,6 @@ namespace Client.ViewModels
             }
         }
 
-        private Brush _eMailColor = Brushes.Gray;
-        public Brush EMailColor
-        {
-            get
-            {
-                return _eMailColor;
-            }
-            set
-            {
-                SetProperty(ref _eMailColor, value);
-            }
-        }
         #endregion // TextBoxBorderColor
 
         #region ToolTipText
@@ -159,26 +134,13 @@ namespace Client.ViewModels
                 SetProperty(ref _confirmPasswordToolTipText, value);
             }
         }
-
-        private string _eMailToolTipText;
-        public string EMailToolTipText
-        {
-            get
-            {
-                return _eMailToolTipText;
-            }
-            set
-            {
-                SetProperty(ref _eMailToolTipText, value);
-            }
-        }
         #endregion //ToolTipText
         private ITransport _transport;
         private bool _usernameIsGood;
         private bool _passwordIsGood;
         private bool _confirmPasswordIsGood;
-        private bool _eMailIsGood;
         private string _confirmPassword;
+        private string _registrationResultLabel;
         MainWindowViewModel _mainWindowViewModel;
         IRegistrationModel _registrationModel;
         public string Username
@@ -254,55 +216,42 @@ namespace Client.ViewModels
                 }
             }
         }
-
-        public string EMail
+        public string RegistrationResultLabel
         {
             get
             {
-                return _registrationModel.EMail;
+                return _registrationResultLabel;
             }
             set
             {
-                if (string.IsNullOrEmpty(value))
-                {
-                    EMailToolTipText = "Необходимо заполнить поле Электронная почта";
-                    EMailColor = Brushes.Red;
-                    EMailToolTipVisibility = Visibility.Visible;
-                    _eMailIsGood = false;
-                }
-                else
-                {
-                    EMailToolTipVisibility = Visibility.Collapsed;
-                    EMailColor = Brushes.Gray;
-                    _registrationModel.EMail = value;
-                    _eMailIsGood = true;
-                }
+                SetProperty(ref _registrationResultLabel, value);
             }
         }
-        
+
         public DelegateCommand ConfirmRegistration { get; }
 
         public RegistrationViewModel(MainWindowViewModel mainWindowViewModel, ITransport transport)
         {
             _transport = transport;
+            _transport.RegistrationResponseReceived += HandleRegistrationResponseReceived;
             _loginToolTipVisibility = Visibility.Collapsed;
             _passwordToolTipVisibility = Visibility.Collapsed;
             _confirmPasswordToolTipVisibility = Visibility.Collapsed;
-            _eMailToolTipVisibility = Visibility.Collapsed;
             _usernameIsGood = false;
             _passwordIsGood = false;
             _confirmPasswordIsGood = false;
-            _eMailIsGood = false;
             _mainWindowViewModel = mainWindowViewModel;
             ConfirmRegistration = new DelegateCommand(ConfirmRegistrationAction, () => true);
             _registrationModel = new RegistrationModel();
         }
 
+
+
         public void ConfirmRegistrationAction()
         {
             if (_checkAllValidate())
             {
-                _mainWindowViewModel.ChangeView(MainWindowViewModel.ViewType.Login);
+                _transport.Registration(Username, Password);
             }
         }
 
@@ -324,11 +273,6 @@ namespace Client.ViewModels
                 ConfirmPassword = _confirmPassword;
                 allOk = false;
             }
-            if (!_eMailIsGood)
-            {
-                EMail = _registrationModel.EMail;
-                allOk = false;
-            }
             if (allOk)
             {
                 return true;
@@ -336,6 +280,21 @@ namespace Client.ViewModels
             else
             {
                 return false;
+            }
+        }
+        private void HandleRegistrationResponseReceived(object sender, RegistrationResponseReceivedEventArgs e)
+        {
+            if (e.RegistrationResult == RegistrationResult.Ok)
+            {
+                _mainWindowViewModel.ChangeView(MainWindowViewModel.ViewType.Login);
+            }
+            else if (e.RegistrationResult == RegistrationResult.UserAlreadyExists)
+            {
+                RegistrationResultLabel = "Пользователь уже существует";
+            }
+            else
+            {
+                RegistrationResultLabel = "Неизвестная ошибка";
             }
         }
     }

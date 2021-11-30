@@ -9,9 +9,25 @@ namespace Common
         private string text;
         private DateTime time;
 
-        public string UsernameSource { get => usernameSource; set => usernameSource = value; }
-        public string UsernameTarget { get => usernameTarget; set => usernameTarget = value; }
-        public string Text { get => text; set => text = value; }
-        public DateTime Time { get => time; set => time = value; }
+        public string UsernameSource
+        {
+            get => usernameSource;
+            set => usernameSource = value;
+        }
+        public string UsernameTarget
+        {
+            get => usernameTarget;
+            set => usernameTarget = value;
+        }
+        public string Text
+        {
+            get => text;
+            set => text = value;
+        }
+        public DateTime Time
+        {
+            get => time;
+            set => time = value;
+        }
     }
 }

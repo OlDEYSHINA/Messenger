@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Client.Models
 {
-    class RegistrationModel:IRegistrationModel
+    class RegistrationModel : IRegistrationModel
     {
         private string _username;
         private string _password;
@@ -31,7 +31,7 @@ namespace Client.Models
             }
             set
             {
-                _password = value; 
+                _password = value;
             }
         }
         public string EMail

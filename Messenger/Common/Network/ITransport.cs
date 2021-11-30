@@ -1,9 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------------------------------------------
-// Copyright ElcomPlus LLC. All rights reserved.
-// Author: Пальников М. С.
-// ---------------------------------------------------------------------------------------------------------------------------------------------------
-
-namespace Common.Network
+﻿namespace Common.Network
 {
     using System;
 
@@ -17,6 +12,8 @@ namespace Common.Network
         event EventHandler<MessageReceivedEventArgs> MessageReceived;
         event EventHandler<UsersStatusesReceivedEventArgs> UsersStatusesReceived;
         event EventHandler<UserStateChangedEventArgs> UserStateChanged;
+        event EventHandler<RegistrationResponseReceivedEventArgs> RegistrationResponseReceived;
+        event EventHandler<LoginResponseReceivedEventArgs> LoginResponseReceived;
 
         #endregion Events
 
@@ -26,7 +23,9 @@ namespace Common.Network
 
         void Disconnect();
 
-        void Login(string login);
+        void Login(string login,string password);
+
+        void Registration(string login, string password);
 
         void Send(string message);
 

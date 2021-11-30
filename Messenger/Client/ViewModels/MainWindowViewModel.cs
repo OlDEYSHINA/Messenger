@@ -79,7 +79,7 @@ namespace Client.ViewModels
        
         public MainWindowViewModel()
         {
-            _transport = TransportFactory.Create(TransportType.WebSocket);
+            _transport = new WsClient();
             loginVM = new LoginVM(this, _transport);
             registrationViewModel = new RegistrationViewModel(this, _transport);
             

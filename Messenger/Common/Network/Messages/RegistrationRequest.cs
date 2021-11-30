@@ -1,6 +1,12 @@
-﻿namespace Common.Network.Messages
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Common.Network.Messages
 {
-    public class ConnectionRequest
+    class RegistrationRequest
     {
         #region Properties
 
@@ -11,7 +17,7 @@
 
         #region Constructors
 
-        public ConnectionRequest(string login, string password)
+        public RegistrationRequest(string login,string password)
         {
             Login = login;
             Password = password;
@@ -25,7 +31,7 @@
         {
             var container = new MessageContainer
             {
-                Identifier = nameof(ConnectionRequest),
+                Identifier = nameof(RegistrationRequest),
                 Payload = this
             };
 

@@ -48,6 +48,10 @@ namespace Common.Network
         public void DeleteFromLists(Guid id)
         {
             var findedUser = _usersGuid.Find(x => x.ID == id);
+            if (findedUser == null)
+            {
+                return;
+            }
             _usersGuid.Remove(findedUser);
             _usersStatuses.Find(x => x.Name == findedUser.Name).IsOnline = false;
         }
@@ -65,7 +69,7 @@ namespace Common.Network
         public string GetUserName(Guid id)
         {
             var findedUser = _usersGuid.Find(x => x.ID == id);
-            return findedUser.Name;
+            return findedUser?.Name;
         }
         #endregion Methods
     }

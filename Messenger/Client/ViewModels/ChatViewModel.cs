@@ -34,7 +34,15 @@ namespace Client.ViewModels
             set
             {
                 SetProperty(ref _selectedUser, value);
-                ChatMessages = _chatModel.GetChat(value.Name);
+                if(value == null)
+                {
+                    ChatMessages = _chatModel.GetChat("Global");
+                }
+                else
+                {
+                    ChatMessages = _chatModel.GetChat(value.Name);
+
+                }
             }
         }
 

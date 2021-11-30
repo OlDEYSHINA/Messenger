@@ -1,19 +1,17 @@
-﻿// ---------------------------------------------------------------------------------------------------------------------------------------------------
-// Copyright ElcomPlus LLC. All rights reserved.
-// Author: Пальников М. С.
-// ---------------------------------------------------------------------------------------------------------------------------------------------------
-
-namespace Common.Network
+﻿namespace Common.Network
 {
     using _EventArgs_;
+    using Common.Network._Enums_;
     using Messages;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using System;
     using System.Collections.Concurrent;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Net;
     using WebSocketSharp.Server;
+
 
     public class WsServer
     {
@@ -31,6 +29,9 @@ namespace Common.Network
 
         public event EventHandler<ConnectionStateChangedEventArgs> ConnectionStateChanged;
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
+        public event EventHandler<CheckLoginEventArgs> CheckLogin;
+        public event EventHandler<RegistrationRequestEventArgs> RegistrationRequestEvent;
+        public event EventHandler<ListOfMessagesBroadcastEventArgs> ListOfMessagesBroadcast;
 
         #endregion Events
 
@@ -48,6 +49,7 @@ namespace Common.Network
 
         public void Start()
         {
+
             _server = new WebSocketServer(_listenAddress.Address, _listenAddress.Port, false);
             _server.AddWebSocketService<WsConnection>("/",
                 client =>
@@ -72,7 +74,7 @@ namespace Common.Network
             _connections.Clear();
 
         }
-       
+
         public void Send(string text, string sourceUser, string targetUser)
         {
             Message nonJsonMessage = new Message { Text = text, UsernameSource = sourceUser, UsernameTarget = targetUser, Time = DateTime.Now };
@@ -116,6 +118,7 @@ namespace Common.Network
             {
                 case nameof(ConnectionRequest):
                     var connectionRequest = ((JObject)container.Payload).ToObject(typeof(ConnectionRequest)) as ConnectionRequest;
+
                     var connectionResponse = new ConnectionResponse { Result = ResultCodes.Ok };
                     if (_connections.Values.Any(item => item.Login == connectionRequest.Login))
                     {
@@ -125,21 +128,18 @@ namespace Common.Network
                     }
                     else
                     {
-                        connection.Login = connectionRequest.Login;
-                        _usersLists.AddToLists(connection.Login, clientId);
-
-                        connection.Send(connectionResponse.GetContainer());
-                        ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(connection.Login, true));
-                        var usersStatuses = new UsersStatusesBroadcast(_usersLists.GetUsersStatuses()).GetContainer();
-                        connection.Send(usersStatuses);
-                        Console.WriteLine("Отправлен список");
-                        UserState newUser = new UserState(connection.Login, true); // отправка изменений о состоянии пользователя
-                        UserStatusChangeBroadcast newChange = new UserStatusChangeBroadcast(newUser);
-                        foreach (var connects in _connections)
-                        {
-                            connects.Value.Send(newChange.GetContainer());
-                        }
+                        CheckLogin?.Invoke(this, new CheckLoginEventArgs(connectionRequest.Login,
+                            connectionRequest.Password, connection, clientId, connectionResponse));
                     }
+                    break;
+                case nameof(RegistrationRequest):
+                    var registrationRequest = ((JObject)container.Payload).ToObject(typeof(RegistrationRequest)) as RegistrationRequest;
+                    if (_connections.Values.Any(item => item.Login == registrationRequest.Login))
+                    {
+                        var registrationResponse = new RegistrationResponse(RegistrationResult.UserAlreadyExists);
+                        connection.Send(registrationResponse.GetContainer());
+                    }
+                    RegistrationRequestEvent?.Invoke(this, new RegistrationRequestEventArgs(registrationRequest.Login, registrationRequest.Password,connection));
                     break;
                 case nameof(MessageRequest):
                     var messageRequest = ((JObject)container.Payload).ToObject(typeof(MessageRequest)) as MessageRequest;
@@ -147,11 +147,63 @@ namespace Common.Network
                     break;
             }
         }
+        public void SendGlobalMessages(WsConnection connection,ListOfMessages listOfMessages)
+        {
+            connection.Send(listOfMessages.GetContainer());
+        }
+        public void RegistrationResponse(WsConnection connection,RegistrationResult result)
+        {
+            var registrationResponse = new RegistrationResponse(result);
+            connection.Send(registrationResponse.GetContainer());
+        }
+
+        public void CheckLoginResponse(string login, string password, WsConnection connection,
+            Guid clientId, ConnectionResponse connectionResponse, LoginResult result)
+        {
+            if (result == LoginResult.Ok)
+            {
+                ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(login, true, "Вход успешно выполнен"));
+                connection.Login = login;
+                _usersLists.AddToLists(login, clientId);
+
+                connection.Send(connectionResponse.GetContainer());
+
+                var usersStatuses = new UsersStatusesBroadcast(_usersLists.GetUsersStatuses()).GetContainer();
+                connection.Send(usersStatuses);
+
+                Console.WriteLine("Отправлен список");
+                UserState newUser = new UserState(login, true); // отправка изменений о состоянии пользователя
+                UserStatusChangeBroadcast newChange = new UserStatusChangeBroadcast(newUser);
+                foreach (var connects in _connections)
+                {
+                    connects.Value.Send(newChange.GetContainer());
+                }
+                ListOfMessagesBroadcast?.Invoke(this, new ListOfMessagesBroadcastEventArgs(connection, login, "Global"));
+            }
+            else if (result == LoginResult.UnknownUser)
+            {
+                connectionResponse.Result = ResultCodes.Failure;
+                connectionResponse.Reason = $"Данный пользователь не зарегистрирован.";
+                connection.Send(connectionResponse.GetContainer());
+            }
+            else if (result == LoginResult.UnknownPassword)
+            {
+                connectionResponse.Result = ResultCodes.Failure;
+                connectionResponse.Reason = $"Неправильный пароль.";
+                connection.Send(connectionResponse.GetContainer());
+            }
+            else
+            {
+                connectionResponse.Result = ResultCodes.Failure;
+                connectionResponse.Reason = $"Неизвестная ошибка.";
+                connection.Send(connectionResponse.GetContainer());
+            }
+
+        }
 
         internal void AddConnection(WsConnection connection)
         {
             _connections.TryAdd(connection.Id, connection);
-
         }
 
         internal void FreeConnection(Guid connectionId)
@@ -166,7 +218,7 @@ namespace Common.Network
             _usersLists.DeleteFromLists(connectionId);
 
             if (_connections.TryRemove(connectionId, out WsConnection connection) && !string.IsNullOrEmpty(connection.Login))
-                ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(connection.Login, false));
+                ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(connection.Login, false, "Соединение принудительно разорвано"));
         }
 
         #endregion Methods

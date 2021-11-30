@@ -1,10 +1,6 @@
-﻿// ---------------------------------------------------------------------------------------------------------------------------------------------------
-// Copyright ElcomPlus LLC. All rights reserved.
-// Author: Пальников М. С.
-// ---------------------------------------------------------------------------------------------------------------------------------------------------
-
-namespace Common.Network
+﻿namespace Common.Network
 {
+    using _Enums_;
     using _EventArgs_;
     using Messages;
     using Newtonsoft.Json;
@@ -39,6 +35,9 @@ namespace Common.Network
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
         public event EventHandler<UsersStatusesReceivedEventArgs> UsersStatusesReceived;
         public event EventHandler<UserStateChangedEventArgs> UserStateChanged;
+        public event EventHandler<RegistrationResponseReceivedEventArgs> RegistrationResponseReceived;
+        public event EventHandler<LoginResponseReceivedEventArgs> LoginResponseReceived;
+
         #endregion Events
 
         #region Constructors
@@ -81,10 +80,18 @@ namespace Common.Network
             _login = string.Empty;
         }
 
-        public void Login(string login)
+        public void Login(string login, string password)
         {
             _login = login;
-            _sendQueue.Enqueue(new ConnectionRequest(_login).GetContainer());
+            _sendQueue.Enqueue(new ConnectionRequest(_login, password).GetContainer());
+
+            if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
+                SendImpl();
+        }
+
+        public void Registration(string login, string password)
+        {
+            _sendQueue.Enqueue(new RegistrationRequest(login, password).GetContainer());
 
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 SendImpl();
@@ -105,7 +112,8 @@ namespace Common.Network
             if (!completed)
             {
                 Disconnect();
-                ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(_login, false));
+                ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(_login,
+                    false, "Ошибка отправки сообщения"));
                 return;
             }
 
@@ -138,10 +146,11 @@ namespace Common.Network
                     var connectionResponse = ((JObject)container.Payload).ToObject(typeof(ConnectionResponse)) as ConnectionResponse;
                     if (connectionResponse.Result == ResultCodes.Failure)
                     {
+
                         _login = string.Empty;
                         MessageReceived?.Invoke(this, new MessageReceivedEventArgs(_login, connectionResponse.Reason));
                     }
-                    ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(_login, true));
+                    ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(_login, true,connectionResponse.Reason ));
                     break;
                 case nameof(MessageBroadcast):
                     var messageBroadcast = ((JObject)container.Payload).ToObject(typeof(MessageBroadcast)) as MessageBroadcast;
@@ -155,17 +164,25 @@ namespace Common.Network
                     var userStatusBroadcast = ((JObject)container.Payload).ToObject(typeof(UserStateChangedEventArgs)) as UserStateChangedEventArgs;
                     UserStateChanged?.Invoke(this, new UserStateChangedEventArgs(userStatusBroadcast.user));
                     break;
+                case nameof(RegistrationResponse):
+                    var registrationResponse = ((JObject)container.Payload).ToObject(typeof(RegistrationResponse)) as RegistrationResponse;
+                    RegistrationResponseReceived?.Invoke(this, new RegistrationResponseReceivedEventArgs(registrationResponse.RegistrationResult));
+                    break;
+                case nameof(LoginResponse):
+                    var loginResponse = ((JObject)container.Payload).ToObject(typeof(LoginResponse)) as LoginResponse;
+                    LoginResponseReceived?.Invoke(this, new LoginResponseReceivedEventArgs(loginResponse.LoginResult));
+                    break;
             }
-        } 
+        }
 
         private void OnClose(object sender, CloseEventArgs e)
         {
-            ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(_login, false));
+            ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(_login, false,"Сервер прекратил работу"));
         }
 
         private void OnOpen(object sender, System.EventArgs e)
         {
-            ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(_login, true));
+            ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(_login, true,"Соединение установлено"));
         }
 
         #endregion Methods

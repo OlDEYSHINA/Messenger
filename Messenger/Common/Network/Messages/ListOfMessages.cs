@@ -1,18 +1,24 @@
-﻿namespace Common.Network.Messages
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Common.Network.Messages
 {
-    public class MessageRequest
+    public class ListOfMessages
     {
         #region Properties
 
-        public string Message { get; set; }
+        public List<Message> Messages { get; set; }
 
         #endregion Properties
 
         #region Constructors
 
-        public MessageRequest(string message)
+        public ListOfMessages(List<Message> messages)
         {
-            Message = message;
+            Messages = messages;
         }
 
         #endregion Constructors
@@ -23,7 +29,7 @@
         {
             var container = new MessageContainer
             {
-                Identifier = nameof(MessageRequest),
+                Identifier = nameof(ListOfMessages),
                 Payload = this
             };
 
@@ -33,3 +39,4 @@
         #endregion Methods
     }
 }
+

@@ -1,18 +1,20 @@
-﻿namespace Common.Network.Messages
+﻿using Common.Network._Enums_;
+
+namespace Common.Network.Messages
 {
-    public class MessageRequest
+    class LoginResponse
     {
         #region Properties
 
-        public string Message { get; set; }
+        public LoginResult LoginResult { get; set; }
 
         #endregion Properties
 
         #region Constructors
 
-        public MessageRequest(string message)
+        public LoginResponse(LoginResult result)
         {
-            Message = message;
+            LoginResult = result;
         }
 
         #endregion Constructors
@@ -23,7 +25,7 @@
         {
             var container = new MessageContainer
             {
-                Identifier = nameof(MessageRequest),
+                Identifier = nameof(RegistrationResponse),
                 Payload = this
             };
 

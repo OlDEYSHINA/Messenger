@@ -5,46 +5,32 @@ using Common;
 
 namespace Client.Models
 {
-    class LoginModel : LoginMessage, ILoginModel
+    class LoginModel : ILoginModel
     {
-      
-        //public string Username
-        //{
-        //    get
-        //    {
-        //        return username;
-        //    }
-        //    set
-        //    {
-        //        username = value;
-        //        OnPropertyChanged("UsernameLogin");
-        //    }
-        //}
-        //public string Password
-        //{
-        //    get
-        //    {
-        //        return password;
-        //    }
-        //    set
-        //    {
-        //        if (string.IsNullOrEmpty(value))
-        //        {
+        private string _username;
+        private string _password;
 
-        //        }
-        //        else
-        //        {
-        //            password = value;
-        //            OnPropertyChanged("PasswordLogin");
-        //        }
-        //    }
-        //}
-        //public event PropertyChangedEventHandler PropertyChanged;
-        //public void OnPropertyChanged([CallerMemberName] string prop = "")
-        //{
-        //    if (PropertyChanged != null)
-        //        PropertyChanged(this, new PropertyChangedEventArgs(prop));
-
-        //}
+        public string Username
+        {
+            get
+            {
+                return _username;
+            }
+            set
+            {
+                _username = value;
+            }
+        }
+        public string Password
+        {
+            get
+            {
+                return _password;
+            }
+            set
+            {
+                _password = value;
+            }
+        }
     }
 }

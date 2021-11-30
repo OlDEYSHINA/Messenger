@@ -40,10 +40,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Network\Messages\ListOfMessages.cs" />
+    <Compile Include="Network\Messages\LoginResponse.cs" />
+    <Compile Include="Network\Messages\RegistrationRequest.cs" />
+    <Compile Include="Network\Messages\RegistrationResponse.cs" />
     <Compile Include="Network\Messages\UsersStatusesBroadcast.cs" />
     <Compile Include="Network\Messages\UserStatusChangeBroadcast.cs" />
-    <Compile Include="Network\Packets\User.cs" />
-    <Compile Include="LoginMessage.cs" />
+    <Compile Include="Network\Messages\User.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Network\ITransport.cs" />
     <Compile Include="Network\Messages\ConnectionRequest.cs" />
@@ -51,22 +54,21 @@
     <Compile Include="Network\Messages\MessageBroadcast.cs" />
     <Compile Include="Network\Messages\MessageContainer.cs" />
     <Compile Include="Network\Messages\MessageRequest.cs" />
-    <Compile Include="Network\Packets\BufferPrimitives.cs" />
-    <Compile Include="Network\Packets\ConnectionRequest.cs" />
-    <Compile Include="Network\Packets\ConnectionResponse.cs" />
-    <Compile Include="Network\Packets\MessageBroadcast.cs" />
-    <Compile Include="Network\Packets\MessageRequest.cs" />
-    <Compile Include="Network\Packets\PacketId.cs" />
-    <Compile Include="Network\TransportFactory.cs" />
     <Compile Include="Network\UsersListsManager.cs" />
     <Compile Include="Network\WsClient.cs" />
     <Compile Include="Network\WsConnection.cs" />
     <Compile Include="Network\WsServer.cs" />
+    <Compile Include="Network\[Enums]\RegistrationResult.cs" />
+    <Compile Include="Network\[Enums]\LoginResult.cs" />
     <Compile Include="Network\[Enums]\ResultCodes.cs" />
-    <Compile Include="Network\[Enums]\TransportType.cs" />
+    <Compile Include="Network\[EventArgs]\CheckLoginEventArgs.cs" />
     <Compile Include="Network\[EventArgs]\ConnectionStateChangedEventArgs.cs" />
+    <Compile Include="Network\[EventArgs]\ListOfMessagesBroadcastEventArgs.cs" />
+    <Compile Include="Network\[EventArgs]\LoginResponseReceivedEventArgs.cs" />
     <Compile Include="Network\[EventArgs]\MessageReceivedEventArgs.cs" />
-    <Compile Include="Network\Packets\UserState.cs" />
+    <Compile Include="Network\Messages\UserState.cs" />
+    <Compile Include="Network\[EventArgs]\RegistrationRequestEventArgs.cs" />
+    <Compile Include="Network\[EventArgs]\RegistrationResponseReceivedEventArgs.cs" />
     <Compile Include="Network\[EventArgs]\UsersStatusesReceivedEventArgs.cs" />
     <Compile Include="Network\[EventArgs]\UserStateChangedEventArgs.cs" />
   </ItemGroup>

@@ -5,16 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:viewModels="clr-namespace:Client.ViewModels"
              xmlns:local="clr-namespace:Client.View"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance viewModels:RegistrationViewModel}">
-    <Grid Background="White">
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance viewModels:RegistrationViewModel}" Height="194.143" Width="299.857">
+    <Grid Background="White" Margin="0,0,-46,0">
         <Label x:Name="RegisterLoginLabel" Content="Логин" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="70"/>
         <Label x:Name="RegisterPasswordLabel" Content="Пароль" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="53"/>
         <Label x:Name="RegisterConfirmPasswordLabel" Content="Повторите пароль" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="RegisterEmailLabel" Content="Электронная почта" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="RegisterLoginTextBox" HorizontalAlignment="Left" Height="23" Margin="146,13,0,0"  Text="{Binding Username}"
-                 TextWrapping="Wrap" VerticalAlignment="Top" Width="187" BorderBrush="{Binding LoginColor}" > 
+                 TextWrapping="Wrap" VerticalAlignment="Top" Width="187" BorderBrush="{Binding LoginColor}" >
             <TextBox.ToolTip>
                 <ToolTip Placement="Right" 
              PlacementRectangle="50,0,0,0"
@@ -55,21 +53,8 @@
                 </ToolTip>
             </TextBox.ToolTip>
         </TextBox>
-        <TextBox x:Name="RegisterEmailTextBox" HorizontalAlignment="Left" Height="23" Margin="146,107,0,0" 
-                 TextWrapping="Wrap" VerticalAlignment="Top" Width="187" Text="{Binding EMail}" BorderBrush="{Binding EMailColor}">
-            <TextBox.ToolTip>
-                <ToolTip Placement="Right" 
-             PlacementRectangle="50,0,0,0"
-             HorizontalOffset="10" 
-             VerticalOffset="20"
-                         Visibility="{Binding EMailToolTipVisibility}">
-                    <DockPanel>
-                        <TextBlock Text="{Binding EMailToolTipText}"></TextBlock>
-                    </DockPanel>
-                </ToolTip>
-            </TextBox.ToolTip>
-        </TextBox>
         <Button x:Name="RegisterConfirmButton" Content="Зарегистрироваться" Command="{Binding ConfirmRegistration}" 
-                HorizontalAlignment="Left" Margin="193,214,0,0" VerticalAlignment="Top" Width="151" Height="45"/>
+                HorizontalAlignment="Left" Margin="185,139,0,0" VerticalAlignment="Top" Width="151" Height="45"/>
+        <Label Content="{Binding RegistrationResultLabel}" HorizontalAlignment="Left" Height="27" Margin="49,104,0,0" VerticalAlignment="Top" Width="239" Foreground="Red"/>
     </Grid>
 </UserControl>
