@@ -1,6 +1,5 @@
 ﻿namespace Common.Network
 {
-    using _Enums_;
     using _EventArgs_;
     using Messages;
     using Newtonsoft.Json;
@@ -37,6 +36,7 @@
         public event EventHandler<UserStateChangedEventArgs> UserStateChanged;
         public event EventHandler<RegistrationResponseReceivedEventArgs> RegistrationResponseReceived;
         public event EventHandler<LoginResponseReceivedEventArgs> LoginResponseReceived;
+        public event EventHandler<ListOfMessagesReceivedEventArgs> ListOfMessagesReceived;
 
         #endregion Events
 
@@ -105,6 +105,13 @@
                 SendImpl();
         }
 
+        public void LoadListOfMessages(string myLogin,string companionLogin)
+        {
+            _sendQueue.Enqueue(new ListOfMessagesRequest(myLogin,companionLogin).GetContainer());
+
+            if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
+                SendImpl();
+        }
 
         private void SendCompleted(bool completed)
         {
@@ -150,7 +157,7 @@
                         _login = string.Empty;
                         MessageReceived?.Invoke(this, new MessageReceivedEventArgs(_login, connectionResponse.Reason));
                     }
-                    ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(_login, true,connectionResponse.Reason ));
+                    ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(_login, true, connectionResponse.Reason));
                     break;
                 case nameof(MessageBroadcast):
                     var messageBroadcast = ((JObject)container.Payload).ToObject(typeof(MessageBroadcast)) as MessageBroadcast;
@@ -172,17 +179,21 @@
                     var loginResponse = ((JObject)container.Payload).ToObject(typeof(LoginResponse)) as LoginResponse;
                     LoginResponseReceived?.Invoke(this, new LoginResponseReceivedEventArgs(loginResponse.LoginResult));
                     break;
+                case nameof(ListOfMessages):
+                    var listOfMessages = ((JObject)container.Payload).ToObject(typeof(ListOfMessages)) as ListOfMessages;
+                    ListOfMessagesReceived?.Invoke(this, new ListOfMessagesReceivedEventArgs(listOfMessages.Messages));
+                    break;
             }
         }
 
         private void OnClose(object sender, CloseEventArgs e)
         {
-            ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(_login, false,"Сервер прекратил работу"));
+            ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(_login, false, "Сервер прекратил работу"));
         }
 
         private void OnOpen(object sender, System.EventArgs e)
         {
-            ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(_login, true,"Соединение установлено"));
+            ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(_login, true, "Соединение установлено"));
         }
 
         #endregion Methods

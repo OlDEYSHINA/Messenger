@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Common.Network;
 
 
 namespace Client.Models
@@ -13,11 +14,16 @@ namespace Client.Models
         
         private readonly ConcurrentDictionary<string, ObservableCollection<Message>> _chats = new ConcurrentDictionary<string, ObservableCollection<Message>>();
 
+        private ITransport _transport;
+
+
         private string _myLogin;
-        public ChatModel(string myLogin)
+        public ChatModel(string myLogin, ITransport transport)
         {
+            _transport = transport;
             _myLogin = myLogin;
             _chats.TryAdd("Global", new ObservableCollection<Message>());
+            _transport.LoadListOfMessages(myLogin, "Global");
         }
         public void AddMessageToChat(string name,Message message)
         {
@@ -32,6 +38,7 @@ namespace Client.Models
             {
                 var dictionary = new ObservableCollection<Message>();
                 _chats.TryAdd(name, dictionary);
+                _transport.LoadListOfMessages(_myLogin, name);
               //  CurrentChat = dictionary;
                 found = dictionary;
                 

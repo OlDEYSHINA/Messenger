@@ -14,6 +14,8 @@
         event EventHandler<UserStateChangedEventArgs> UserStateChanged;
         event EventHandler<RegistrationResponseReceivedEventArgs> RegistrationResponseReceived;
         event EventHandler<LoginResponseReceivedEventArgs> LoginResponseReceived;
+        event EventHandler<ListOfMessagesReceivedEventArgs> ListOfMessagesReceived;
+
 
         #endregion Events
 
@@ -28,6 +30,8 @@
         void Registration(string login, string password);
 
         void Send(string message);
+
+        void LoadListOfMessages(string myLogin, string companionLogin);
 
         #endregion Methods
     }

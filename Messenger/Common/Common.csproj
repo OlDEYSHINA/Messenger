@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Network\Messages\ListOfMessages.cs" />
+    <Compile Include="Network\Messages\ListOfMessagesRequest.cs" />
     <Compile Include="Network\Messages\LoginResponse.cs" />
     <Compile Include="Network\Messages\RegistrationRequest.cs" />
     <Compile Include="Network\Messages\RegistrationResponse.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Network\[EventArgs]\CheckLoginEventArgs.cs" />
     <Compile Include="Network\[EventArgs]\ConnectionStateChangedEventArgs.cs" />
     <Compile Include="Network\[EventArgs]\ListOfMessagesBroadcastEventArgs.cs" />
+    <Compile Include="Network\[EventArgs]\ListOfMessagesReceivedEventArgs.cs" />
     <Compile Include="Network\[EventArgs]\LoginResponseReceivedEventArgs.cs" />
     <Compile Include="Network\[EventArgs]\MessageReceivedEventArgs.cs" />
     <Compile Include="Network\Messages\UserState.cs" />

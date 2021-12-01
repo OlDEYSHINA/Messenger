@@ -46,7 +46,7 @@ namespace Server
             _userService = new UserService(databaseController);
             _messageService = new MessageService(databaseController);
         }
-        private void HandleLoadUsersList(object sender,EventArgs e)
+        private void HandleLoadUsersList(object sender, EventArgs e)
         {
             var users = _userService.GetUsers();
             _wsServer.LoadUsersListResponse(users);
@@ -75,11 +75,15 @@ namespace Server
                 sendingList.Add(message);
             }
             var listOfMessages = new ListOfMessages(sendingList);
-            _wsServer.SendGlobalMessages(e.Connection, listOfMessages);
+            _wsServer.SendListOfMessages(e.Connection, listOfMessages);
         }
         private void HandleRegistrationRequest(object sender, RegistrationRequestEventArgs e)
         {
-            var result = _userService.AddUser(e.Login, e.Password);
+            bool result=false;
+            if (e.Login != "Global")
+            {
+                result = _userService.AddUser(e.Login, e.Password);
+            }
             if (result)
             {
                 _wsServer.RegistrationResponse(e.Connection, RegistrationResult.Ok);
@@ -106,13 +110,14 @@ namespace Server
         {
             _wsServer.Stop();
         }
-   
+
         private void HandleMessageReceived(object sender, MessageReceivedEventArgs e)
         {
             string message = $"Клиент '{e.ClientName}' отправил сообщение '{e.Message}'.";
             Console.WriteLine(message);
             var income = JsonConvert.DeserializeObject<Message>(e.Message);
             _wsServer.Send(income.Text, income.UsernameSource, income.UsernameTarget);
+            _messageService.TryAddMessage(income.UsernameSource, income.UsernameTarget, income.Text, DateTime.Now);
         }
 
         private void HandleConnectionStateChanged(object sender, ConnectionStateChangedEventArgs e)

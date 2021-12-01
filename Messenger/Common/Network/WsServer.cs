@@ -57,7 +57,7 @@
                     client.AddServer(this);
                 });
             _usersLists = new UsersListsManager();
-            LoadUsersList?.Invoke(this,null);
+            LoadUsersList?.Invoke(this, null);
 
             _server.Start();
         }
@@ -89,12 +89,19 @@
             }
             else
             {
-                var guidTarget = _usersLists.GetUserGuid(targetUser);
-                var connectionTarget = _connections.FirstOrDefault(x => x.Key == guidTarget).Value;
-                connectionTarget.Send(messageBroadcast);
-                var guidSource = _usersLists.GetUserGuid(sourceUser);
-                var connectionSource = _connections.FirstOrDefault(x => x.Key == guidSource).Value;
-                connectionSource.Send(messageBroadcast);
+                if (_usersLists.IsUserOnline(targetUser))
+                {
+                    var guidTarget = _usersLists.GetUserGuid(targetUser);
+                    var connectionTarget = _connections.FirstOrDefault(x => x.Key == guidTarget).Value;
+                    connectionTarget.Send(messageBroadcast);
+                }
+
+                if (targetUser != sourceUser)
+                {
+                    var guidSource = _usersLists.GetUserGuid(sourceUser);
+                    var connectionSource = _connections.FirstOrDefault(x => x.Key == guidSource).Value;
+                    connectionSource.Send(messageBroadcast);
+                }
             }
         }
 
@@ -139,19 +146,23 @@
                         var registrationResponse = new RegistrationResponse(RegistrationResult.UserAlreadyExists);
                         connection.Send(registrationResponse.GetContainer());
                     }
-                    RegistrationRequestEvent?.Invoke(this, new RegistrationRequestEventArgs(registrationRequest.Login, registrationRequest.Password,connection));
+                    RegistrationRequestEvent?.Invoke(this, new RegistrationRequestEventArgs(registrationRequest.Login, registrationRequest.Password, connection));
                     break;
                 case nameof(MessageRequest):
                     var messageRequest = ((JObject)container.Payload).ToObject(typeof(MessageRequest)) as MessageRequest;
                     MessageReceived?.Invoke(this, new MessageReceivedEventArgs(connection.Login, messageRequest.Message));
                     break;
+                case nameof(ListOfMessagesRequest):
+                    var listOfMessagesRequest = ((JObject)container.Payload).ToObject(typeof(ListOfMessagesRequest)) as ListOfMessagesRequest;
+                    ListOfMessagesBroadcast?.Invoke(this, new ListOfMessagesBroadcastEventArgs(connection, listOfMessagesRequest.MyLogin, listOfMessagesRequest.CompanionLogin));
+                    break;
             }
         }
-        public void SendGlobalMessages(WsConnection connection,ListOfMessages listOfMessages)
+        public void SendListOfMessages(WsConnection connection, ListOfMessages listOfMessages)
         {
             connection.Send(listOfMessages.GetContainer());
         }
-        public void RegistrationResponse(WsConnection connection,RegistrationResult result)
+        public void RegistrationResponse(WsConnection connection, RegistrationResult result)
         {
             var registrationResponse = new RegistrationResponse(result);
             connection.Send(registrationResponse.GetContainer());
@@ -181,7 +192,7 @@
                 {
                     connects.Value.Send(newChange.GetContainer());
                 }
-                ListOfMessagesBroadcast?.Invoke(this, new ListOfMessagesBroadcastEventArgs(connection, login, "Global"));
+                //ListOfMessagesBroadcast?.Invoke(this, new ListOfMessagesBroadcastEventArgs(connection, login, "Global"));
             }
             else if (result == LoginResult.UnknownUser)
             {

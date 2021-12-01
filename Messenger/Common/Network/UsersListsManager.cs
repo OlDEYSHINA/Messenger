@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.Network
 {
@@ -37,7 +34,7 @@ namespace Common.Network
                 _usersStatuses.Find(x => x.Name == login).IsOnline = true;
             }
         }
-       
+
 
         /// <summary>
         /// Удаление пользователя из листа сервера и смена состояния в листе клиента
@@ -55,10 +52,15 @@ namespace Common.Network
         }
         public void LoadListFromDB(List<string> users)
         {
-            foreach(var user in users)
+            foreach (var user in users)
             {
                 _usersStatuses.Add(new UserState(user, false));
             }
+        }
+        public bool IsUserOnline(string name)
+        {
+            var finded = _usersStatuses.Find(x => x.Name == name);
+            return finded.IsOnline;
         }
         public List<UserState> GetUsersStatuses()
         {

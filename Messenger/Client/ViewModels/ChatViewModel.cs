@@ -2,6 +2,7 @@
 using Client.Models;
 using Common;
 using Common.Network;
+using Common.Network._EventArgs_;
 using Newtonsoft.Json;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -21,7 +22,7 @@ namespace Client.ViewModels
         private string _incomeMessage;
         private string _myLogin;
 
-        private UserState _selectedUser;// = new UserState("jopa",true);
+        private UserState _selectedUser;
 
         private ChatModel _chatModel;
 
@@ -103,11 +104,12 @@ namespace Client.ViewModels
         {
             _myLogin = login;
             _transport = transport;
-            _chatModel = new ChatModel(_myLogin);
+            _chatModel = new ChatModel(_myLogin, _transport);
             SelectedUser = new UserState("Global", true);
             _transport.MessageReceived += HandleMessageReceived;
             _transport.UsersStatusesReceived += HandleUsersStatusesRequest;
             _transport.UserStateChanged += HandleUserStateChange;
+            _transport.ListOfMessagesReceived += HandleListOfMessagesReseived;
             SendMessage = new DelegateCommand(SendMessageToServer, () => true);
         }
 
@@ -184,7 +186,13 @@ namespace Client.ViewModels
                 _chatModel.NewMessage(incomeMessage);
             }
         }
-
+        private void HandleListOfMessagesReseived(object sender,ListOfMessagesReceivedEventArgs e)
+        {
+            foreach(var message in e.Messages)
+            {
+                _chatModel.NewMessage(message);
+            }
+        }
         private void HandleUsersStatusesRequest(object sender, UsersStatusesReceivedEventArgs e)
         {
             UsersStatusesCollection = new ObservableCollection<UserState>(e.UsersStatuses);
