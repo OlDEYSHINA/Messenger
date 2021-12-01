@@ -32,6 +32,7 @@
         public event EventHandler<CheckLoginEventArgs> CheckLogin;
         public event EventHandler<RegistrationRequestEventArgs> RegistrationRequestEvent;
         public event EventHandler<ListOfMessagesBroadcastEventArgs> ListOfMessagesBroadcast;
+        public event EventHandler LoadUsersList;
 
         #endregion Events
 
@@ -49,14 +50,15 @@
 
         public void Start()
         {
-
             _server = new WebSocketServer(_listenAddress.Address, _listenAddress.Port, false);
             _server.AddWebSocketService<WsConnection>("/",
                 client =>
                 {
                     client.AddServer(this);
                 });
-            _usersLists = new UsersListsManager(this);
+            _usersLists = new UsersListsManager();
+            LoadUsersList?.Invoke(this,null);
+
             _server.Start();
         }
 
@@ -70,9 +72,7 @@
             {
                 connection.Close();
             }
-
             _connections.Clear();
-
         }
 
         public void Send(string text, string sourceUser, string targetUser)
@@ -156,7 +156,10 @@
             var registrationResponse = new RegistrationResponse(result);
             connection.Send(registrationResponse.GetContainer());
         }
-
+        public void LoadUsersListResponse(List<string> users)
+        {
+            _usersLists.LoadListFromDB(users);
+        }
         public void CheckLoginResponse(string login, string password, WsConnection connection,
             Guid clientId, ConnectionResponse connectionResponse, LoginResult result)
         {

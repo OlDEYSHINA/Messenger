@@ -12,14 +12,12 @@ namespace Common.Network
 
         private List<UserState> _usersStatuses = new List<UserState>();
         private List<User> _usersGuid = new List<User>();
-        private WsServer _wsServer;
         #endregion Fields
 
         #region Constructors
 
-        public UsersListsManager(WsServer server)
+        public UsersListsManager()
         {
-            _wsServer = server;
             _usersStatuses.Add(new UserState("Global", true));
         }
 
@@ -55,7 +53,13 @@ namespace Common.Network
             _usersGuid.Remove(findedUser);
             _usersStatuses.Find(x => x.Name == findedUser.Name).IsOnline = false;
         }
-
+        public void LoadListFromDB(List<string> users)
+        {
+            foreach(var user in users)
+            {
+                _usersStatuses.Add(new UserState(user, false));
+            }
+        }
         public List<UserState> GetUsersStatuses()
         {
             return _usersStatuses;

@@ -42,10 +42,15 @@ namespace Server
             _wsServer.CheckLogin += HandleCheckLogin;
             _wsServer.RegistrationRequestEvent += HandleRegistrationRequest;
             _wsServer.ListOfMessagesBroadcast += HandleListOfMessagesBroadcast;
+            _wsServer.LoadUsersList += HandleLoadUsersList;
             _userService = new UserService(databaseController);
             _messageService = new MessageService(databaseController);
         }
-
+        private void HandleLoadUsersList(object sender,EventArgs e)
+        {
+            var users = _userService.GetUsers();
+            _wsServer.LoadUsersListResponse(users);
+        }
         private void HandleListOfMessagesBroadcast(object sender, ListOfMessagesBroadcastEventArgs e)
         {
             List<Database.DBModels.Message> result;
@@ -101,7 +106,7 @@ namespace Server
         {
             _wsServer.Stop();
         }
-
+   
         private void HandleMessageReceived(object sender, MessageReceivedEventArgs e)
         {
             string message = $"Клиент '{e.ClientName}' отправил сообщение '{e.Message}'.";
