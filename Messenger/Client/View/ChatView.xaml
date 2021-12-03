@@ -37,10 +37,10 @@
         </ListView>
         <Menu HorizontalAlignment="Left" Height="26" VerticalAlignment="Top" Width="800" RenderTransformOrigin="0.362,0.923">
             <MenuItem Header="File" Height="26" Width="36">
-                <MenuItem Header="Exit"  Command="{Binding Exit}"></MenuItem>
+                <MenuItem Header="Exit"  Command="{Binding MenuExitButton}"></MenuItem>
             </MenuItem>
             <MenuItem Header="Options">
-                <MenuItem Header="Settings"></MenuItem>
+                <MenuItem Header="Settings" ></MenuItem>
             </MenuItem>
             <MenuItem Header="About">
                 <MenuItem Header="About"></MenuItem>
