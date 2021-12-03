@@ -60,10 +60,13 @@
   <ItemGroup>
     <Compile Include="Database\DatabaseContext.cs" />
     <Compile Include="Database\DatabaseController.cs" />
+    <Compile Include="Database\DBModels\ClientEvent.cs" />
     <Compile Include="Database\DBModels\Message.cs" />
     <Compile Include="Database\DBModels\User.cs" />
+    <Compile Include="Database\DBServices\ClientEventService.cs" />
     <Compile Include="Database\DBServices\MessageService.cs" />
     <Compile Include="Database\DBServices\UserService.cs" />
+    <Compile Include="Database\Migrations\Configuration.cs" />
     <Compile Include="NetworkManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,5 +1,6 @@
 ﻿using Client.BLL;
 using Client.Models;
+using Client.Services;
 using Common;
 using Common.Network;
 using Common.Network._EventArgs_;
@@ -19,12 +20,12 @@ namespace Client.ViewModels
         private ITransport _transport;
 
         private string _message;
-        private string _incomeMessage;
         private string _myLogin;
 
         private UserState _selectedUser;
 
         private ChatModel _chatModel;
+        private ChatMenuService _chatMenuService;
 
         public UserState SelectedUser
         {
@@ -48,6 +49,9 @@ namespace Client.ViewModels
         }
 
         public DelegateCommand SendMessage { get; }
+        public DelegateCommand OpenEventLog { get; }
+        public DelegateCommand MenuExitButton { get; }
+        public DelegateCommand MenuSettingsButton { get; }
 
         public ObservableCollection<Message> ChatMessages
         {
@@ -84,18 +88,6 @@ namespace Client.ViewModels
                 SetProperty(ref _message, value);
             }
         }
-        public string IncomeMessage
-        {
-            get
-            {
-                return _incomeMessage;
-            }
-            set
-            {
-                SetProperty(ref _incomeMessage, value);
-            }
-        }
-
         #endregion Properties
 
         #region Constructors
@@ -106,15 +98,23 @@ namespace Client.ViewModels
             _transport = transport;
             _chatModel = new ChatModel(_myLogin, _transport);
             SelectedUser = new UserState("Global", true);
+            _chatMenuService = new ChatMenuService();
             _transport.MessageReceived += HandleMessageReceived;
             _transport.UsersStatusesReceived += HandleUsersStatusesRequest;
             _transport.UserStateChanged += HandleUserStateChange;
             _transport.ListOfMessagesReceived += HandleListOfMessagesReseived;
             SendMessage = new DelegateCommand(SendMessageToServer, () => true);
+            OpenEventLog = new DelegateCommand(ShowEventLog, () => true);
+            MenuExitButton = new DelegateCommand(_chatMenuService.Exit, () => true);
+            MenuSettingsButton = new DelegateCommand(_chatMenuService.Settings, () => true);
         }
 
         #endregion Constructors
 
+        public void ShowEventLog()
+        {
+
+        }
         public void SendMessageToServer()
         {
             if (!string.IsNullOrEmpty(Message))

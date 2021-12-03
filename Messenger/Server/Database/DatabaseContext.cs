@@ -16,6 +16,8 @@ namespace Server.Database
 
         public DbSet<Message> Messages { get; set; }
 
+        public DbSet<ClientEvent> ClientsEvents { get; set; }
+
         #endregion Properties
 
         #region Constructors

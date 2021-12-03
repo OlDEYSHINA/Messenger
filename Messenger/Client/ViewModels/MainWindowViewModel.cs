@@ -84,7 +84,12 @@ namespace Client.ViewModels
             registrationViewModel = new RegistrationViewModel(this, _transport);
             
             ChangeView(ViewType.Login);
+            Application.Current.Exit += Current_Exit;
         }
-       
+
+        private void Current_Exit(object sender, ExitEventArgs e)
+        {
+            _transport.Disconnect();
+        }
     }
 }

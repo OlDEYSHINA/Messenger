@@ -219,12 +219,10 @@ namespace Client.ViewModels
             }
             else
             {
-                
-                EnableLoginView = true;
+                EnableLoginView = false;
                 _login.Username = null;
                 _login.Password = null;
                 _mainWindowViewModel.ChangeView(MainWindowViewModel.ViewType.Login);
-               // SetDefaultButtonState();
             }
         }
 

@@ -76,6 +76,7 @@
     <Compile Include="Models\Interfaces\IRegistrationModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\RegistrationModel.cs" />
+    <Compile Include="Services\ChatMenuService.cs" />
     <Compile Include="ViewModels\ChatViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\RegistrationViewModel.cs" />

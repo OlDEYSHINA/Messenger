@@ -1,6 +1,6 @@
 ﻿namespace Common.Network
 {
-    public enum ResultCodes : byte
+    public enum ResultCodes
     {
         Ok,
         Failure,

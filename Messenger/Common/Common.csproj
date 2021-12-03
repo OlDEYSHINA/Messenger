@@ -40,6 +40,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Network\Messages\EventNote.cs" />
     <Compile Include="Network\Messages\ListOfMessages.cs" />
     <Compile Include="Network\Messages\ListOfMessagesRequest.cs" />
     <Compile Include="Network\Messages\LoginResponse.cs" />

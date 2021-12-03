@@ -77,6 +77,7 @@ namespace Server
             var listOfMessages = new ListOfMessages(sendingList);
             _wsServer.SendListOfMessages(e.Connection, listOfMessages);
         }
+
         private void HandleRegistrationRequest(object sender, RegistrationRequestEventArgs e)
         {
             bool result=false;

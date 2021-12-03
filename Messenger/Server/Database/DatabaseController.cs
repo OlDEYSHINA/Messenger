@@ -1,4 +1,5 @@
 ﻿using Common.Network._Enums_;
+using Common.Network.Messages;
 using Server.Database.DBModels;
 using System;
 using System.Collections.Generic;
@@ -53,6 +54,29 @@ namespace Server.Database
             }
         }
 
+        public bool TryAddClientEvent(string login, string eventText, DateTime date)
+        {
+            try
+            {
+                ClientEvent message = new ClientEvent
+                {
+                    EventText = eventText,
+                    Login = login,
+                    Date = date
+                };
+
+                using (var context = new DatabaseContext(_connectionString))
+                {
+                    context.ClientsEvents.Add(message);
+                    context.SaveChanges();
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool TryAddClient(string login, string password)
         {
             var finded = _databaseContext.Users.Where(x => x.Login == login).Count();
@@ -74,6 +98,12 @@ namespace Server.Database
         {
             var users = _databaseContext.Users.ToList();
             return users;
+        }
+
+        public List<ClientEvent> GetClientEventsList()
+        {
+            var clientEvents = _databaseContext.ClientsEvents.ToList();
+            return clientEvents;
         }
 
         public LoginResult CheckLogin(string login, string password)
@@ -108,6 +138,18 @@ namespace Server.Database
             return messages;
         }
 
+        public List<EventNote> GetEventLog()
+        {
+            List<EventNote> log = new List<EventNote>();
+            var allLog = _databaseContext.ClientsEvents.ToList();
+
+            foreach (var eventik in allLog)
+            {
+                log.Add(new EventNote(eventik.Login, eventik.EventText, eventik.Date));
+            }
+            return log;
+        }
+
         /// <summary>
         /// Использовать при загрузке пользователя.
         /// </summary>
@@ -115,14 +157,12 @@ namespace Server.Database
         public List<Message> GetGlobalMessages()
         {
             List<Message> messages = new List<Message>();
-
             var incomeMessages = _databaseContext.Messages.Where(x => x.TargetUsername == "Global");
-
+            
             foreach (Message msg in incomeMessages)
             {
                 messages.Add(msg);
             }
-
             return messages;
         }
         #endregion Methods

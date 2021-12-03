@@ -9,19 +9,19 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance viewModels:ChatViewModel}">
-        <Grid>
+    <Grid Margin="0,0,0,0">
         <ListView SelectedItem="{Binding SelectedUser}" ItemsSource="{Binding UsersStatusesCollection}"  HorizontalAlignment="Left" 
-                 Height="388" VerticalAlignment="Top" Width="234" Margin="10,10,0,0">
+                 Height="391" VerticalAlignment="Top" Width="234" Margin="10,41,0,0" RenderTransformOrigin="0.5,0.5">
             <ListView.View>
-                <GridView>
-                    <GridViewColumn  DisplayMemberBinding="{Binding Path=Name}" Width="100">Имя</GridViewColumn>
+                <GridView >
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Width="100">Имя</GridViewColumn>
                     <GridViewColumn  DisplayMemberBinding="{Binding Path=IsOnline}" >Статус</GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
-            <TextBox HorizontalAlignment="Left" Height="19" Margin="320,421,0,0" TextWrapping="Wrap" Text="{Binding Message}" VerticalAlignment="Top" Width="365"/>
-        <Button Content="Button" Command="{Binding SendMessage}" HorizontalAlignment="Left" Height="19" Margin="701,421,10,10" VerticalAlignment="Top" Width="89"/>
-        <ListView ItemsSource="{Binding ChatMessages}" HorizontalAlignment="Left" Height="388" Margin="320,10,0,0" VerticalAlignment="Top" Width="470">
+        <TextBox HorizontalAlignment="Left" Height="19" Margin="320,436,0,0" TextWrapping="Wrap" Text="{Binding Message}" VerticalAlignment="Top" Width="365"/>
+        <Button Content="Button" Command="{Binding SendMessage}" HorizontalAlignment="Left" Height="19" Margin="701,436,0,0" VerticalAlignment="Top" Width="89"/>
+        <ListView ItemsSource="{Binding ChatMessages}" HorizontalAlignment="Left" Height="377" Margin="320,41,0,0" VerticalAlignment="Top" Width="470">
             <ListView.View>
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=UsernameSource}" Width="100">Имя</GridViewColumn>
@@ -31,11 +31,21 @@
             </ListView.View>
             <ListView.Resources>
                 <col:ArrayList x:Key="Amogus">
-                    
+
                 </col:ArrayList>
             </ListView.Resources>
-        </ListView> 
-        <Label Content="{Binding IncomeMessage}" HorizontalAlignment="Left"  Height="28" Margin="135,412,0,0" VerticalAlignment="Top" Width="123"/>
+        </ListView>
+        <Menu HorizontalAlignment="Left" Height="26" VerticalAlignment="Top" Width="800" RenderTransformOrigin="0.362,0.923">
+            <MenuItem Header="File" Height="26" Width="36">
+                <MenuItem Header="Exit"  Command="{Binding Exit}"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Options">
+                <MenuItem Header="Settings"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="About">
+                <MenuItem Header="About"></MenuItem>
+            </MenuItem>
+        </Menu>
 
     </Grid>
 </UserControl>
