@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Client.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,23 +11,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Client.BLL;
-using Client.ViewModels;
 
-namespace Client
+namespace Client.View
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for EventLogWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+     partial class EventLogWindow : Window
     {
-        
-        public MainWindow()
+        public EventLogWindow(EventLogViewModel eventLogViewModel)
         {
             InitializeComponent();
-            DataContext = new MainWindowViewModel ();
+            DataContext = eventLogViewModel;
         }
     }
 }

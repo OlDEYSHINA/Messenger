@@ -1,0 +1,22 @@
+﻿<Window x:Class="Client.View.EventLogWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:Client.ViewModels"
+        xmlns:local="clr-namespace:Client.View"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance viewModels:EventLogViewModel}"
+        Title="EventLogWindow" Height="450" Width="800" SizeToContent="Width">
+    <Grid>
+        <DatePicker SelectedDate="{Binding FirstDate}" HorizontalAlignment="Left" Margin="211,10,0,0" VerticalAlignment="Top" Width="120"/>
+        <DatePicker SelectedDate="{Binding SecondDate}" HorizontalAlignment="Left" Margin="365,10,0,0" VerticalAlignment="Top" Width="120"/>
+        <Label Content="Выбери период включительно от" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+        <Label Content="до" HorizontalAlignment="Left" Margin="336,10,0,0" VerticalAlignment="Top"/>
+        <ListBox ItemsSource="{Binding EventLog}"  HorizontalAlignment="Left" Height="342" Margin="10,67,0,0" VerticalAlignment="Top" Width="772"/>
+        <Button Command="{Binding Request}" Content="Запросить" HorizontalAlignment="Left" Margin="512,10,0,0" VerticalAlignment="Top" Width="75" Height="24"/>
+        <TextBox  HorizontalAlignment="Left" Height="23" Margin="114,39,0,0" TextWrapping="Wrap" Text="{Binding SearchString}" VerticalAlignment="Top" Width="160"/>
+        <Label Content="Поиск:" HorizontalAlignment="Left" Margin="10,36,0,0" VerticalAlignment="Top" Width="99"/>
+        <Button Command="{Binding Search}" Content="Найти" HorizontalAlignment="Left" Margin="288,41,0,0" VerticalAlignment="Top" Width="75"/>
+    </Grid>
+</Window>

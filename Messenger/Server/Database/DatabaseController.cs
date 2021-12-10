@@ -72,8 +72,9 @@ namespace Server.Database
                 }
                 return true;
             }
-            catch
+            catch (Exception e)
             {
+                var s = e;
                 return false;
             }
         }

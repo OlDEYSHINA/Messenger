@@ -15,6 +15,8 @@
         event EventHandler<RegistrationResponseReceivedEventArgs> RegistrationResponseReceived;
         event EventHandler<LoginResponseReceivedEventArgs> LoginResponseReceived;
         event EventHandler<ListOfMessagesReceivedEventArgs> ListOfMessagesReceived;
+        event EventHandler<EventLogResponseEventArgs> EventLogResponse;
+
 
 
         #endregion Events
@@ -32,6 +34,8 @@
         void Send(string message);
 
         void LoadListOfMessages(string myLogin, string companionLogin);
+
+        void EventRequest(DateTime firstDate, DateTime secondDate);
 
         #endregion Methods
     }

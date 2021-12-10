@@ -1,5 +1,6 @@
 ﻿using Client.ViewModels;
 using Common.Network;
+using System;
 using System.Windows;
 
 namespace Client.Services
@@ -31,8 +32,10 @@ namespace Client.Services
         }
         public void Settings()
         {
-
+         //   var settingsWindow = new SettingsWindow();
+           // settingsWindow.Show();
         }
+
         public void About()
         {
 

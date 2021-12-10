@@ -37,6 +37,7 @@
         public event EventHandler<RegistrationResponseReceivedEventArgs> RegistrationResponseReceived;
         public event EventHandler<LoginResponseReceivedEventArgs> LoginResponseReceived;
         public event EventHandler<ListOfMessagesReceivedEventArgs> ListOfMessagesReceived;
+        public event EventHandler<EventLogResponseEventArgs> EventLogResponse;
 
         #endregion Events
 
@@ -92,6 +93,14 @@
         public void Registration(string login, string password)
         {
             _sendQueue.Enqueue(new RegistrationRequest(login, password).GetContainer());
+
+            if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
+                SendImpl();
+        }
+
+        public void EventRequest(DateTime firstDate,DateTime secondDate)
+        {
+            _sendQueue.Enqueue(new EventLogRequest(firstDate,secondDate).GetContainer());
 
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 SendImpl();
@@ -182,6 +191,10 @@
                 case nameof(ListOfMessages):
                     var listOfMessages = ((JObject)container.Payload).ToObject(typeof(ListOfMessages)) as ListOfMessages;
                     ListOfMessagesReceived?.Invoke(this, new ListOfMessagesReceivedEventArgs(listOfMessages.Messages));
+                    break;
+                case nameof(EventLogResponse):
+                    var eventLog = ((JObject)container.Payload).ToObject(typeof(EventLogResponse)) as EventLogResponse;
+                    EventLogResponse?.Invoke(this, new EventLogResponseEventArgs(eventLog.EventLog));
                     break;
             }
         }

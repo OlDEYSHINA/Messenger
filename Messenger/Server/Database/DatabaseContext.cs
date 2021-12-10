@@ -21,7 +21,6 @@ namespace Server.Database
         #endregion Properties
 
         #region Constructors
-
         public DatabaseContext(string connectionString) : base("DBConnection")
         {
             Database.Connection.ConnectionString = connectionString;

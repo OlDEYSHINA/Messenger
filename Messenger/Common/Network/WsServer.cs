@@ -33,6 +33,7 @@
         public event EventHandler<RegistrationRequestEventArgs> RegistrationRequestEvent;
         public event EventHandler<ListOfMessagesBroadcastEventArgs> ListOfMessagesBroadcast;
         public event EventHandler LoadUsersList;
+        public event EventHandler<EventLogRequestEventArgs> EventLogRequestEvent;
 
         #endregion Events
 
@@ -156,7 +157,15 @@
                     var listOfMessagesRequest = ((JObject)container.Payload).ToObject(typeof(ListOfMessagesRequest)) as ListOfMessagesRequest;
                     ListOfMessagesBroadcast?.Invoke(this, new ListOfMessagesBroadcastEventArgs(connection, listOfMessagesRequest.MyLogin, listOfMessagesRequest.CompanionLogin));
                     break;
+                case nameof(EventLogRequest):
+                    var eventLogRequest = ((JObject)container.Payload).ToObject(typeof(EventLogRequest)) as EventLogRequest;
+                    EventLogRequestEvent?.Invoke(this, new EventLogRequestEventArgs(connection, eventLogRequest.FirstDate, eventLogRequest.SecondDate));
+                    break;
             }
+        }
+        public void SendEventLog(WsConnection connection,List<EventNote> eventLog)
+        {
+            connection.Send(new EventLogResponse(eventLog).GetContainer());
         }
         public void SendListOfMessages(WsConnection connection, ListOfMessages listOfMessages)
         {

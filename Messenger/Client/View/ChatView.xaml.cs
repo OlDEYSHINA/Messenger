@@ -20,6 +20,8 @@ namespace Client.View
     /// </summary>
     public partial class ChatView : UserControl
     {
+        public double ColumnSize = 470;
+
         public ChatView()
         {
             InitializeComponent();

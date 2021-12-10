@@ -26,6 +26,7 @@ namespace Server
 
         private UserService _userService;
         private MessageService _messageService;
+        private ClientEventService _clientEventService;
 
         public NetworkManager()
         {
@@ -43,8 +44,15 @@ namespace Server
             _wsServer.RegistrationRequestEvent += HandleRegistrationRequest;
             _wsServer.ListOfMessagesBroadcast += HandleListOfMessagesBroadcast;
             _wsServer.LoadUsersList += HandleLoadUsersList;
+            _wsServer.EventLogRequestEvent += HandleEventLogRequest;
             _userService = new UserService(databaseController);
             _messageService = new MessageService(databaseController);
+            _clientEventService = new ClientEventService(databaseController);
+        }
+        private void HandleEventLogRequest(object sender, EventLogRequestEventArgs e)
+        {
+            var eventLog = _clientEventService.GetAllEventLog();
+            _wsServer.SendEventLog(e.Connection, eventLog);
         }
         private void HandleLoadUsersList(object sender, EventArgs e)
         {
@@ -125,6 +133,7 @@ namespace Server
         {
             string clientState = e.Connected ? "подключен" : "отключен";
             string message = $"Клиент '{e.ClientName}' {clientState}.";
+            var otvet =_clientEventService.TryAddClientEvent(e.ClientName, clientState, DateTime.Now);
 
             Console.WriteLine(message);
             _wsServer.Send(message);

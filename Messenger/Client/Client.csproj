@@ -68,9 +68,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BLL\NetworkManager.cs" />
-    <Compile Include="BLL\[EventArgs]\ChatMessageEventArgs.cs" />
-    <Compile Include="BLL\[EventArgs]\LoginRequestEventArgs.cs" />
+    <Compile Include="BLL\ObservableMessage.cs" />
     <Compile Include="Models\ChatModel.cs" />
     <Compile Include="Models\Interfaces\ILoginModel.cs" />
     <Compile Include="Models\Interfaces\IRegistrationModel.cs" />
@@ -78,10 +76,15 @@
     <Compile Include="Models\RegistrationModel.cs" />
     <Compile Include="Services\ChatMenuService.cs" />
     <Compile Include="ViewModels\ChatViewModel.cs" />
+    <Compile Include="ViewModels\EventLogViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\RegistrationViewModel.cs" />
+    <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="View\ChatView.xaml.cs">
       <DependentUpon>ChatView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\EventLogWindow.xaml.cs">
+      <DependentUpon>EventLogWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
@@ -90,7 +93,22 @@
       <DependentUpon>RegistrationView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\LoginVM.cs" />
+    <Compile Include="View\SettingsWindow.xaml.cs">
+      <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Styles\ListBoxesStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\UserControlsStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\ChatView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\EventLogWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -118,6 +136,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="View\RegistrationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\SettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -155,8 +177,6 @@
       <Name>Common</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="BLL\Interfaces\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

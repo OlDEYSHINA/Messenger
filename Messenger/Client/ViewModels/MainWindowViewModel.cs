@@ -4,8 +4,6 @@ using System;
 using System.Threading;
 using System.Windows;
 
-using Client.BLL;
-
 using Common.Network;
 using System.ComponentModel;
 
