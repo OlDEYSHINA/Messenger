@@ -5,6 +5,7 @@
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="Template">
             <Setter.Value>
+                
                 <ControlTemplate TargetType="{x:Type ListBoxItem}">
                     <Border x:Name="border" HorizontalAlignment="Left">
                         <Grid>
@@ -13,12 +14,15 @@
                                 <RowDefinition/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <TextBlock x:Name="usernameMessage" Grid.Row="0" FontSize="14" HorizontalAlignment="Left" Margin="10,0,0,0" Text="{Binding Path=UsernameSource}"/>
+                            
+                            <TextBlock x:Name="usernameMessage" Grid.Row="0" FontSize="14" 
+                                       HorizontalAlignment="Left" Margin="10,0,0,0" Text="{Binding Path=UsernameSource}"/>
                             
                                 <Border x:Name="textBorder" Grid.Row="1" Background="LightBlue" CornerRadius="10">
                                     <TextBlock  Text="{Binding Text}" MaxWidth="480" TextWrapping="Wrap" Margin="5,0,5,0"/>
                                 </Border>
-                            <TextBlock Grid.Row="2" FontSize="10" Foreground="Gray" HorizontalAlignment="Right" Text="{Binding Time}"/>
+                            <TextBlock Grid.Row="2" FontSize="10" Foreground="Gray" HorizontalAlignment="Right"
+                                       Text="{Binding Time}"/>
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -34,6 +38,7 @@
                         </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
+                
             </Setter.Value>
         </Setter>
     </Style>
@@ -43,8 +48,10 @@
                 <ControlTemplate TargetType="{x:Type ListViewItem}">
                     <Border x:Name="borderUser" Background="LightCoral"  CornerRadius="5">
                         <Grid>
-                            <TextBlock Text="{Binding Name}" FontSize="16" TextWrapping="Wrap" Margin="10,0,0,0" Foreground="Black" FontWeight="Bold"/>
-                            <TextBlock x:Name="isOnlineStat" Text="Offline" HorizontalAlignment="Right" Margin="0,0,10,0" FontWeight="DemiBold"/>
+                            <TextBlock Text="{Binding Name}" FontSize="16" Width="180" HorizontalAlignment="Left"
+                                       TextWrapping="Wrap" Margin="10,0,0,0" Foreground="Black" FontWeight="Bold"/>
+                            <TextBlock x:Name="isOnlineStat" Text="Offline" HorizontalAlignment="Right"
+                                       Margin="0,0,10,0" FontWeight="DemiBold"/>
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -68,5 +75,20 @@
                 <Setter Property="Foreground" Value="White"/>
             </DataTrigger>
         </Style.Triggers>
+    </Style>
+    <Style x:Key="EventLogListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate >
+                    <Border Background="AliceBlue" CornerRadius="3">
+                        <Grid Background="LightBlue" Margin="2,2,2,2" >
+                            <TextBlock Text="{Binding Login}"/>
+                            <TextBlock Margin="200,0,0,0" HorizontalAlignment="Left" Text="{Binding EventText}"/>
+                            <TextBlock Text="{Binding Date}" HorizontalAlignment="Right"/>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 </ResourceDictionary>

@@ -13,7 +13,7 @@
         <DatePicker SelectedDate="{Binding SecondDate}" HorizontalAlignment="Left" Margin="365,10,0,0" VerticalAlignment="Top" Width="120"/>
         <Label Content="Выбери период включительно от" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
         <Label Content="до" HorizontalAlignment="Left" Margin="336,10,0,0" VerticalAlignment="Top"/>
-        <ListBox ItemsSource="{Binding EventLog}"  HorizontalAlignment="Left" Height="342" Margin="10,67,0,0" VerticalAlignment="Top" Width="772"/>
+        <ListBox ItemsSource="{Binding EventLog, Mode=TwoWay}" ItemContainerStyle="{StaticResource EventLogListBoxItemStyle}" HorizontalAlignment="Left" Height="342" Margin="10,67,0,0" VerticalAlignment="Top" Width="772"/>
         <Button Command="{Binding Request}" Content="Запросить" HorizontalAlignment="Left" Margin="512,10,0,0" VerticalAlignment="Top" Width="75" Height="24"/>
         <TextBox  HorizontalAlignment="Left" Height="23" Margin="114,39,0,0" TextWrapping="Wrap" Text="{Binding SearchString}" VerticalAlignment="Top" Width="160"/>
         <Label Content="Поиск:" HorizontalAlignment="Left" Margin="10,36,0,0" VerticalAlignment="Top" Width="99"/>

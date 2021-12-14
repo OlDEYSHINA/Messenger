@@ -10,12 +10,21 @@ using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Windows.Input;
 
 namespace Client.ViewModels
 {
     class ChatViewModel : BindableBase
     {
+        #region Constants
+
+        //const string MESSAGE_FORMAT = @"^[a-zA-Z]";
+
+        #endregion Constants
+
         #region Properties
+
         private ITransport _transport;
 
         private string _message;
@@ -66,6 +75,8 @@ namespace Client.ViewModels
         public DelegateCommand MenuExitButton { get; }
         public DelegateCommand MenuSettingsButton { get; }
         public DelegateCommand MenuAboutButton { get; }
+
+        public DelegateCommand<object> SendMessageToServerCommand { get; }
 
 
         public ObservableCollection<ObservableMessage> ChatMessages
@@ -125,9 +136,18 @@ namespace Client.ViewModels
             MenuSettingsButton = new DelegateCommand(_chatMenuService.Settings, () => true);
             MenuAboutButton = new DelegateCommand(_chatMenuService.About, () => true);
             OpenEventLog = new DelegateCommand(OpenEventLogWindow, () => true);
+
+            SendMessageToServerCommand = new DelegateCommand<object>(SendMessageToServer);
         }
 
         #endregion Constructors
+        public void SendMessageOnEnter(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                SendMessageToServer();
+            }
+        }
 
         public void OpenEventLogWindow()
         {
@@ -136,6 +156,21 @@ namespace Client.ViewModels
         }
 
         public void SendMessageToServer()
+        {
+            //if (Regex.IsMatch(Message,))
+            //{
+
+            //}
+            if (!string.IsNullOrEmpty(Message))
+            {
+                var message = new Common.Message { Text = Message, UsernameSource = _myLogin, UsernameTarget = SelectedUser.Name, Time = DateTime.Now };
+                var serializeMessage = JsonConvert.SerializeObject(message);
+                _transport?.Send(serializeMessage);
+                Message = null;
+            }
+        }
+
+        public void SendMessageToServer(object param)
         {
             if (!string.IsNullOrEmpty(Message))
             {
@@ -217,9 +252,9 @@ namespace Client.ViewModels
             {
                 App.Current.Dispatcher.Invoke(() => ChatMessages.Add(observableIncome));
             }
-            
-                _chatModel.NewMessage(observableIncome);
-            
+
+            _chatModel.NewMessage(observableIncome);
+
         }
         private void HandleListOfMessagesReseived(object sender, ListOfMessagesReceivedEventArgs e)
         {

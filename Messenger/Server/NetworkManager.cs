@@ -14,19 +14,20 @@ using System.Net;
 
 namespace Server
 {
-    class NetworkManager
+    public class NetworkManager
     {
         private readonly long _timeout;
         private readonly int _port;
         private readonly IPAddress _ip;
         private readonly ConnectionStringSettings _connectionString;
-        private const int WS_PORT = 65000;
+       // private const int WS_PORT = 65000;
 
         private readonly WsServer _wsServer;
 
         private UserService _userService;
         private MessageService _messageService;
         private ClientEventService _clientEventService;
+        private DatabaseController databaseController;
 
         public NetworkManager()
         {
@@ -35,9 +36,20 @@ namespace Server
             _port = settingsManager.Port;
             _timeout = settingsManager.Timeout;
             _connectionString = settingsManager.ConnectionSettings;
-            DatabaseController databaseController = new DatabaseController(_connectionString);
+            try
+            {
+                databaseController = new DatabaseController(_connectionString);
 
-            _wsServer = new WsServer(new IPEndPoint(IPAddress.Any, WS_PORT));
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Ошибка подключения к БД по причине:\n"+e.Message +" \nЗапуск со стандартными настройками БД");
+                var connectionSettings = new ConnectionStringSettings(settingsManager.DefaultSettings.DBName,
+                    settingsManager.DefaultSettings.ConnectionString, settingsManager.DefaultSettings.ProviderName);
+                databaseController = new DatabaseController(connectionSettings);
+            }
+            _wsServer = new WsServer(new IPEndPoint(IPAddress.Any, _port));
+            _wsServer.Timeout = _timeout;
             _wsServer.ConnectionStateChanged += HandleConnectionStateChanged;
             _wsServer.MessageReceived += HandleMessageReceived;
             _wsServer.CheckLogin += HandleCheckLogin;
@@ -51,7 +63,7 @@ namespace Server
         }
         private void HandleEventLogRequest(object sender, EventLogRequestEventArgs e)
         {
-            var eventLog = _clientEventService.GetAllEventLog();
+            var eventLog = _clientEventService.GetEventLog(e.FirstDate,e.SecondDate);
             _wsServer.SendEventLog(e.Connection, eventLog);
         }
         private void HandleLoadUsersList(object sender, EventArgs e)
@@ -96,10 +108,20 @@ namespace Server
             if (result)
             {
                 _wsServer.RegistrationResponse(e.Connection, RegistrationResult.Ok);
+                var otvet = _clientEventService.TryAddClientEvent("Registration module", "Пользователь "+e.Login+" зарегистрировался", DateTime.Now);
+                if (!otvet)
+                {
+                    Console.WriteLine("Ошибка записи в журнал событий");
+                }
             }
             else
             {
                 _wsServer.RegistrationResponse(e.Connection, RegistrationResult.UserAlreadyExists);
+                var otvet = _clientEventService.TryAddClientEvent("Registration module", "Попытка зарегистрировать пользователя " + e.Login, DateTime.Now);
+                if (!otvet)
+                {
+                    Console.WriteLine("Ошибка записи в журнал событий");
+                }
             }
         }
         private void HandleCheckLogin(object sender, CheckLoginEventArgs e)
@@ -111,7 +133,7 @@ namespace Server
         }
         public void Start()
         {
-            Console.WriteLine($"WebSocketServer: {IPAddress.Any}:{WS_PORT}");
+            Console.WriteLine($"WebSocketServer: {IPAddress.Any}:{_port}");
             _wsServer.Start();
         }
 
@@ -132,9 +154,12 @@ namespace Server
         private void HandleConnectionStateChanged(object sender, ConnectionStateChangedEventArgs e)
         {
             string clientState = e.Connected ? "подключен" : "отключен";
-            string message = $"Клиент '{e.ClientName}' {clientState}.";
+            string message = $"Клиент '{e.ClientName}' {clientState} по причине'{e.Reason}'.";
             var otvet =_clientEventService.TryAddClientEvent(e.ClientName, clientState, DateTime.Now);
-
+            if (!otvet)
+            {
+                Console.WriteLine("Ошибка записи в журнал событий");
+            }
             Console.WriteLine(message);
             _wsServer.Send(message);
         }

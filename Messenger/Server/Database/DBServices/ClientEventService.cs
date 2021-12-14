@@ -31,6 +31,10 @@ namespace Server.Database.DBServices
             return _databaseController.TryAddClientEvent(login, eventText, date);
         }
 
+        public List<EventNote> GetEventLog(DateTime firstDate,DateTime secondDate)
+        {
+            return _databaseController.GetEventsList(firstDate,secondDate);
+        }
         public List<EventNote> GetAllEventLog()
         {
             return _databaseController.GetEventLog();

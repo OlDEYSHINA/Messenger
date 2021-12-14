@@ -19,6 +19,7 @@ namespace Client.ViewModels
         private bool _correctUsername;
         private bool _correctPassword;
         private bool _enableLoginView;
+        private bool _enableConnectionButton;
 
         private string _errorLabel;
         private string _serverAddress;
@@ -49,6 +50,17 @@ namespace Client.ViewModels
             set
             {
                 SetProperty(ref _enableLoginView, value);
+            }
+        }
+        public bool EnableConnectionButton
+        {
+            get
+            {
+                return _enableConnectionButton;
+            }
+            set
+            {
+                SetProperty(ref _enableConnectionButton, value);
             }
         }
         public string ErrorLabel
@@ -143,6 +155,7 @@ namespace Client.ViewModels
             _correctPassword = false;
             _correctUsername = false;
             _enableLoginView = false;
+            EnableConnectionButton = true;
 #if DEBUG
             ServerAddress = "127.0.0.1";
             ServerPort = "65000";
@@ -153,13 +166,15 @@ namespace Client.ViewModels
         {
             try
             {
-            
+                ErrorLabel = "Попытка подключиться к серверу";
+                EnableConnectionButton = false;
             _transport.ConnectionStateChanged += HandleConnectionStateChanged;
             // _currentTransport.MessageReceived += HandleMessageReceived;
             _transport.Connect(_serverAddress, _serverPort);
             }
             catch (Exception ex)
             {
+                EnableConnectionButton = true;
                 ErrorLabel=ex.Message;
                // SetDefaultButtonState();
             }
@@ -175,8 +190,11 @@ namespace Client.ViewModels
                 EnableLoginView = false;
                 _transport?.Login(_login.Username,_login.Password);
             }
-            else
+            else if(UsernameLogin!=null && PasswordLogin!=null)
             {
+                UsernameLogin = UsernameLogin;
+                PasswordLogin = PasswordLogin;
+               // ConfirmLogin();
                 // Вывод ошибки в окно
             }
         }
@@ -199,29 +217,36 @@ namespace Client.ViewModels
             {
                 ErrorLabel = "Неизвестная ошибка";
             }
-
         }
 
 
         private void HandleConnectionStateChanged(object sender, ConnectionStateChangedEventArgs e)
         {
+            EnableConnectionButton = true;
             ErrorLabel = e.Reason;
             if (e.Connected)
             {
                 if (string.IsNullOrEmpty(e.ClientName))
                 {
                     EnableLoginView = true;
+
+                }
+                else if(e.Reason==null)
+                {
+                    _mainWindowViewModel.ChangeView(MainWindowViewModel.ViewType.Chat);
                 }
                 else
                 {
-                    _mainWindowViewModel.ChangeView(MainWindowViewModel.ViewType.Chat);
+                    EnableLoginView = true;
                 }
             }
             else
             {
+                //_login.Username = null;
+                //_login.Password = null;
+                //UsernameLogin = null;
+                //PasswordLogin = null;
                 EnableLoginView = false;
-                _login.Username = null;
-                _login.Password = null;
                 _mainWindowViewModel.ChangeView(MainWindowViewModel.ViewType.Login);
             }
         }

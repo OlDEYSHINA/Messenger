@@ -18,7 +18,7 @@ namespace Server
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                Console.WriteLine("Сервер прекратил работу по причине\n"+ex);
                 Console.ReadLine();
             }
         }

@@ -101,10 +101,16 @@ namespace Server.Database
             return users;
         }
 
-        public List<ClientEvent> GetClientEventsList()
+  
+        public List<EventNote> GetEventsList(DateTime firstDate,DateTime secondDate)
         {
-            var clientEvents = _databaseContext.ClientsEvents.ToList();
-            return clientEvents;
+            List<EventNote> log = new List<EventNote>();
+            var clientEvents = _databaseContext.ClientsEvents.Where(x=>(x.Date>=firstDate & x.Date<=secondDate)).ToList();
+            foreach (var eventik in clientEvents)
+            {
+                log.Add(new EventNote(eventik.Login, eventik.EventText, eventik.Date));
+            }
+            return log;
         }
 
         public LoginResult CheckLogin(string login, string password)

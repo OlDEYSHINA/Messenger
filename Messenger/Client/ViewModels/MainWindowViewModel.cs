@@ -74,7 +74,7 @@ namespace Client.ViewModels
                     }
             }
         }
-       
+      
         public MainWindowViewModel()
         {
             _transport = new WsClient();
@@ -88,6 +88,11 @@ namespace Client.ViewModels
         private void Current_Exit(object sender, ExitEventArgs e)
         {
             _transport.Disconnect();
+        }
+        public void ReloadWsClient()
+        {
+            _transport = null;
+            _transport = new WsClient();
         }
     }
 }

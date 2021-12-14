@@ -9,9 +9,19 @@ namespace Server.Settings
     class SettingsManager
     {
         #region Fields
+        public readonly Settings DefaultSettings = new Settings
+        {
+            ConnectionString = "data source=(localdb)\\MSSQLLocalDB;Initial " +
+               "Catalog=userstore;Integrated Security=True;",
+            DBName = "DBConnection",
+            Timeout = 3000000000, //5 минут, c интервалом проверки 10 секунд
+            Ip = "0.0.0.0",
+            Port = 65000,
+            ProviderName = "System.Data.SqlClient"
+        };
 
         private readonly string DefaultPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
-                                                    "\\Messanger\\Settings.txt";
+                                                    "\\Messanger\\ServerSettings.txt";
         private int _port;
         private long _timeout;
 
@@ -65,27 +75,16 @@ namespace Server.Settings
             }
             else
             {
-                Settings defaultSettings = new Settings
-                {
-                    ConnectionString = "data source=(localdb)\\MSSQLLocalDB;Initial " +
-               "Catalog=userstore;Integrated Security=True;",
-                    DBName = "DBConnection",
-                    Timeout = 300,
-                    Ip = "0.0.0.0",
-                    Port = 65000,
-                    ProviderName = "System.Data.SqlClient"
-                };
-
-                SaveToFile(defaultSettings, DefaultPath);
+                Console.WriteLine("Файл с настройками поврежден или отсутствует,\nсоздание нового файла настроек");
+                SaveToFile(DefaultSettings, DefaultPath);
                 settings = LoadFromFile(DefaultPath);
-
                 Ip = IPAddress.Parse(settings.Ip);
                 Port = settings.Port;
                 Timeout = settings.Timeout;
                 ConnectionSettings = new ConnectionStringSettings(settings.DBName,
                     settings.ConnectionString, settings.ProviderName);
             }
-           
+
 
         }
 

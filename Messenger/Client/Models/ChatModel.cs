@@ -81,7 +81,7 @@ namespace Client.Models
             else if (message.UsernameSource == _myLogin)
             {
                 var found = _chats.FirstOrDefault(x => x.Key == message.UsernameTarget).Value;
-                App.Current.Dispatcher.Invoke(() => found.Add(message));
+                App.Current.Dispatcher.Invoke(() => found.Add(message)); //ZAFICSIRUEM
             }
             else
             {

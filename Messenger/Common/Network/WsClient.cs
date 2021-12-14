@@ -202,6 +202,7 @@
         private void OnClose(object sender, CloseEventArgs e)
         {
             ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(_login, false, "Сервер не отвечает"));
+            _login = null;
         }
 
         private void OnOpen(object sender, System.EventArgs e)

@@ -109,22 +109,29 @@ namespace Client.ViewModels
         public void EventLogResponse(object sender, EventLogResponseEventArgs e)
         {
             _incomeEventLog = e.EventLog;
+            SearchInEventLog();
         }
 
         public void SearchInEventLog()
         {
             if (string.IsNullOrEmpty(_searchString))
             {
-                EventLog.Clear();
+                if (EventLog != null)
+                {
+                    App.Current.Dispatcher.Invoke(() => EventLog.Clear());
+                }
                 foreach (var eventNote in _incomeEventLog)
                 {
-                    EventLog.Add(eventNote);
+                    App.Current.Dispatcher.Invoke(() => EventLog.Add(eventNote));
                 }
             }
             else
             {
-                var finded = _incomeEventLog.FindAll(o => o.EventText.Contains(_searchString) & o.Login.Contains(_searchString));
-                EventLog.Clear();
+                var finded = _incomeEventLog.FindAll(o => o.EventText.Contains(_searchString) || o.Login.Contains(_searchString));
+                if (EventLog != null)
+                {
+                    EventLog.Clear();
+                }
                 foreach (var item in finded)
                 {
                     EventLog.Add(item);
@@ -134,13 +141,17 @@ namespace Client.ViewModels
 
         public void EventBaseCall()
         {
-            if (FirstDate != DateTime.MinValue & SecondDate != DateTime.MinValue)
+            var firstDate = FirstDate.Date;
+            var secondDate = SecondDate.Date;
+            secondDate =secondDate.AddDays(1);
+            if ((firstDate != DateTime.MinValue & secondDate != DateTime.MinValue)&&(firstDate<secondDate))
             {
-                _transport?.EventRequest(FirstDate, SecondDate);
+                
+                _transport?.EventRequest(firstDate,secondDate);
             }
             else
             {
-                ErrorString = "Заполните даты запроса";
+                ErrorString = "Некорретный выбор временного промежутка";
             }
         }
         public void OpenWindow()

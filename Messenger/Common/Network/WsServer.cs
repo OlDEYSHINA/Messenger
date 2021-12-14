@@ -10,6 +10,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
+    using System.Timers;
     using WebSocketSharp.Server;
 
 
@@ -21,6 +22,9 @@
         private readonly ConcurrentDictionary<Guid, WsConnection> _connections;
 
         private WebSocketServer _server;
+        private readonly Dictionary<Guid, long> _timeoutClients;
+        private readonly Timer _timeoutTimer;
+        private long _timeout;
         private UsersListsManager _usersLists;
 
         #endregion Fields
@@ -37,18 +41,48 @@
 
         #endregion Events
 
+        public long Timeout
+        {
+            get
+            {
+                return _timeout;
+            }
+            set
+            {
+                _timeout = value;
+            }
+        }
+
         #region Constructors
 
         public WsServer(IPEndPoint listenAddress)
         {
             _listenAddress = listenAddress;
             _connections = new ConcurrentDictionary<Guid, WsConnection>();
+            _timeoutClients = new Dictionary<Guid, long>();
+            _timeoutTimer = new Timer();
+            _timeoutTimer.AutoReset = true;
+            _timeoutTimer.Interval = 10000;
+            _timeoutTimer.Elapsed += OnTimeoutEvent;
+            _timeoutTimer.Enabled = true;
+            _timeoutTimer.Start();
         }
 
         #endregion Constructors
 
         #region Methods
 
+        private void OnTimeoutEvent(object sender, ElapsedEventArgs e)
+        {
+            var timeClients = _timeoutClients.Where(item => DateTime.Now.Ticks - item.Value >= Timeout).Select(item => item.Key).ToList();
+            foreach (Guid client in timeClients)
+            {
+                _timeoutClients?.Remove(client);
+                _connections[client]?.Close();
+                var name =_usersLists.GetUserName(client);
+                Console.WriteLine("Клиент "+'"'+name+'"'+" отключен по бездействию");
+            }
+        }
         public void Start()
         {
             _server = new WebSocketServer(_listenAddress.Address, _listenAddress.Port, false);
@@ -73,6 +107,7 @@
             {
                 connection.Close();
             }
+            _timeoutClients.Clear();
             _connections.Clear();
         }
 
@@ -121,7 +156,7 @@
         {
             if (!_connections.TryGetValue(clientId, out WsConnection connection))
                 return;
-
+            _timeoutClients[clientId] = DateTime.Now.Ticks;
             switch (container.Identifier)
             {
                 case nameof(ConnectionRequest):
@@ -227,6 +262,7 @@
         internal void AddConnection(WsConnection connection)
         {
             _connections.TryAdd(connection.Id, connection);
+            _timeoutClients.Add(connection.Id, DateTime.Now.Ticks);
         }
 
         internal void FreeConnection(Guid connectionId)
@@ -239,9 +275,12 @@
                 connects.Value.Send(newChange.GetContainer());
             }
             _usersLists.DeleteFromLists(connectionId);
+            _timeoutClients.Remove(connectionId);
 
             if (_connections.TryRemove(connectionId, out WsConnection connection) && !string.IsNullOrEmpty(connection.Login))
-                ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(connection.Login, false, "Соединение принудительно разорвано"));
+                ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(connection.Login, false, "Соединение разорвано"));
+            var name = _usersLists.GetUserName(connectionId);
+           // Console.WriteLine(name+" принудительно отключен");
         }
 
         #endregion Methods

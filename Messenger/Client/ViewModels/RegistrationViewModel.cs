@@ -158,6 +158,22 @@ namespace Client.ViewModels
                     LoginToolTipVisibility = Visibility.Visible;
                     _usernameIsGood = false;
                 }
+                else if (value.Length < 3)
+                {
+                    {
+                        LoginToolTipText = "Логин не должен быть короче 3 символов";
+                        LoginColor = Brushes.Red;
+                        LoginToolTipVisibility = Visibility.Visible;
+                        _usernameIsGood = false;
+                    }
+                }
+                else if (value.Length > 30)
+                {
+                    LoginToolTipText = "Логин не должен быть длиннее 30 символов";
+                    LoginColor = Brushes.Red;
+                    LoginToolTipVisibility = Visibility.Visible;
+                    _usernameIsGood = false;
+                }
                 else
                 {
                     LoginToolTipVisibility = Visibility.Collapsed;
@@ -178,6 +194,20 @@ namespace Client.ViewModels
                 if (string.IsNullOrEmpty(value))
                 {
                     PasswordToolTipText = "Необходимо заполнить поле Пароль";
+                    PasswordColor = Brushes.Red;
+                    PasswordToolTipVisibility = Visibility.Visible;
+                    _passwordIsGood = false;
+                }
+                else if (value.Length < 3)
+                {
+                    PasswordToolTipText = "Пароль не может быть короче 3 символов";
+                    PasswordColor = Brushes.Red;
+                    PasswordToolTipVisibility = Visibility.Visible;
+                    _passwordIsGood = false;
+                }
+                else if (value.Length > 30)
+                {
+                    PasswordToolTipText = "Пароль не может быть длиннее 30 символов";
                     PasswordColor = Brushes.Red;
                     PasswordToolTipVisibility = Visibility.Visible;
                     _passwordIsGood = false;
@@ -207,6 +237,13 @@ namespace Client.ViewModels
                     ConfirmPasswordToolTipVisibility = Visibility.Visible;
                     _confirmPasswordIsGood = false;
                 }
+                else if (Password !=value)
+                {
+                    ConfirmPasswordToolTipText = "Пароли должны совпадать";
+                    ConfirmPasswordColor = Brushes.Red;
+                    ConfirmPasswordToolTipVisibility = Visibility.Visible;
+                    _confirmPasswordIsGood = false;
+                }
                 else
                 {
                     ConfirmPasswordToolTipVisibility = Visibility.Collapsed;
@@ -229,6 +266,7 @@ namespace Client.ViewModels
         }
 
         public DelegateCommand ConfirmRegistration { get; }
+        public DelegateCommand CancelRegistrationCommand { get; }
 
         public RegistrationViewModel(MainWindowViewModel mainWindowViewModel, ITransport transport)
         {
@@ -242,6 +280,7 @@ namespace Client.ViewModels
             _confirmPasswordIsGood = false;
             _mainWindowViewModel = mainWindowViewModel;
             ConfirmRegistration = new DelegateCommand(ConfirmRegistrationAction, () => true);
+            CancelRegistrationCommand = new DelegateCommand(CancelRegistration, () => true);
             _registrationModel = new RegistrationModel();
         }
 
@@ -296,6 +335,10 @@ namespace Client.ViewModels
             {
                 RegistrationResultLabel = "Неизвестная ошибка";
             }
+        }
+        public void CancelRegistration()
+        {
+            _mainWindowViewModel.ChangeView(MainWindowViewModel.ViewType.Login);
         }
     }
 }
