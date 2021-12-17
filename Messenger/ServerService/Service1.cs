@@ -1,24 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
-using Server;
-
-namespace ServerService
+﻿namespace ServerService
 {
+    using System.ServiceProcess;
+
+    using Server;
+
     public partial class Service1 : ServiceBase
     {
+        #region Fields
+
         private NetworkManager _networkManager;
+
+        #endregion
+
+        #region Constructors
+
         public Service1()
         {
             InitializeComponent();
-            
         }
+
+        #endregion
+
+        #region Methods
 
         protected override void OnStart(string[] args)
         {
@@ -30,5 +33,7 @@ namespace ServerService
         {
             _networkManager.Stop();
         }
+
+        #endregion
     }
 }

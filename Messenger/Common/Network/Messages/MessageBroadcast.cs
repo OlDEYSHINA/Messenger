@@ -6,7 +6,7 @@
 
         public string Message { get; set; }
 
-        #endregion Properties
+        #endregion
 
         #region Constructors
 
@@ -15,21 +15,21 @@
             Message = message;
         }
 
-        #endregion Constructors
+        #endregion
 
         #region Methods
 
         public MessageContainer GetContainer()
         {
             var container = new MessageContainer
-            {
-                Identifier = nameof(MessageBroadcast),
-                Payload = this
-            };
+                            {
+                                Identifier = nameof(MessageBroadcast),
+                                Payload = this
+                            };
 
             return container;
         }
 
-        #endregion Methods
+        #endregion
     }
 }

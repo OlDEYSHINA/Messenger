@@ -1,28 +1,73 @@
-﻿using Client.View;
-using Common.Network;
-using Common.Network._EventArgs_;
-using Common.Network.Messages;
-using Prism.Commands;
-using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-
-namespace Client.ViewModels
+﻿namespace Client.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Windows;
+
+    using Common.Network;
+    using Common.Network.Messages;
+
+    using Prism.Commands;
+    using Prism.Mvvm;
+
+    using View;
+
     public class EventLogViewModel : BindableBase
     {
+        #region Fields
+
         private DateTime _firstDate;
         private DateTime _secondDate;
         private string _errorString;
         private string _searchString;
         private List<EventNote> _incomeEventLog;
+
+        private ObservableCollection<EventNote> _eventLog;
+        private readonly ITransport _transport;
+        private readonly EventLogWindow _eventLogWindow;
+
+        #endregion
+
+        #region Properties
+
+        public DelegateCommand Request { get; }
+
+        public DelegateCommand Search { get; }
+
+        public ObservableCollection<EventNote> EventLog
+        {
+            get => _eventLog;
+            set => SetProperty(ref _eventLog, value);
+        }
+
+        public string SearchString
+        {
+            get => _searchString;
+            set => SetProperty(ref _searchString, value);
+        }
+
+        public DateTime FirstDate
+        {
+            get => _firstDate;
+            set => SetProperty(ref _firstDate, value);
+        }
+
+        public DateTime SecondDate
+        {
+            get => _secondDate;
+            set => SetProperty(ref _secondDate, value);
+        }
+
+        public string ErrorString
+        {
+            get => _errorString;
+            set => SetProperty(ref _errorString, value);
+        }
+
         private List<EventNote> incomeEventLog
         {
-            get
-            {
-                return _incomeEventLog;
-            }
+            get => _incomeEventLog;
             set
             {
                 _incomeEventLog = value;
@@ -30,69 +75,9 @@ namespace Client.ViewModels
             }
         }
 
-        private ObservableCollection<EventNote> _eventLog;
-        private ITransport _transport;
-        private EventLogWindow _eventLogWindow;
-        public DelegateCommand Request { get; }
-        public DelegateCommand Search { get; }
-        public ObservableCollection<EventNote> EventLog
-        {
-            get
-            {
-                return _eventLog;
-            }
-            set
-            {
-                SetProperty(ref _eventLog, value);
-            }
-        }
+        #endregion
 
-        public string SearchString
-        {
-            get
-            {
-                return _searchString;
-            }
-            set
-            {
-                SetProperty(ref _searchString, value);
-            }
-        }
-
-        public DateTime FirstDate
-        {
-            get
-            {
-                return _firstDate;
-            }
-            set
-            {
-                SetProperty(ref _firstDate, value);
-            }
-        }
-        public DateTime SecondDate
-        {
-            get
-            {
-                return _secondDate;
-            }
-            set
-            {
-                SetProperty(ref _secondDate, value);
-            }
-        }
-
-        public string ErrorString
-        {
-            get
-            {
-                return _errorString;
-            }
-            set
-            {
-                SetProperty(ref _errorString, value);
-            }
-        }
+        #region Constructors
 
         public EventLogViewModel(ITransport transport)
         {
@@ -106,6 +91,10 @@ namespace Client.ViewModels
             EventLog = new ObservableCollection<EventNote>();
         }
 
+        #endregion
+
+        #region Methods
+
         public void EventLogResponse(object sender, EventLogResponseEventArgs e)
         {
             _incomeEventLog = e.EventLog;
@@ -118,21 +107,24 @@ namespace Client.ViewModels
             {
                 if (EventLog != null)
                 {
-                    App.Current.Dispatcher.Invoke(() => EventLog.Clear());
+                    Application.Current.Dispatcher.Invoke(() => EventLog.Clear());
                 }
-                foreach (var eventNote in _incomeEventLog)
+
+                foreach (EventNote eventNote in _incomeEventLog)
                 {
-                    App.Current.Dispatcher.Invoke(() => EventLog.Add(eventNote));
+                    Application.Current.Dispatcher.Invoke(() => EventLog.Add(eventNote));
                 }
             }
             else
             {
-                var finded = _incomeEventLog.FindAll(o => o.EventText.Contains(_searchString) || o.Login.Contains(_searchString));
+                List<EventNote> finded = _incomeEventLog.FindAll(o => o.EventText.Contains(_searchString) || o.Login.Contains(_searchString));
+
                 if (EventLog != null)
                 {
                     EventLog.Clear();
                 }
-                foreach (var item in finded)
+
+                foreach (EventNote item in finded)
                 {
                     EventLog.Add(item);
                 }
@@ -141,23 +133,26 @@ namespace Client.ViewModels
 
         public void EventBaseCall()
         {
-            var firstDate = FirstDate.Date;
-            var secondDate = SecondDate.Date;
-            secondDate =secondDate.AddDays(1);
-            if ((firstDate != DateTime.MinValue & secondDate != DateTime.MinValue)&&(firstDate<secondDate))
+            DateTime firstDate = FirstDate.Date;
+            DateTime secondDate = SecondDate.Date;
+            secondDate = secondDate.AddDays(1);
+
+            if ((firstDate != DateTime.MinValue) & (secondDate != DateTime.MinValue) && firstDate < secondDate)
             {
-                
-                _transport?.EventRequest(firstDate,secondDate);
+                _transport?.EventRequest(firstDate, secondDate);
             }
             else
             {
                 ErrorString = "Некорретный выбор временного промежутка";
             }
         }
+
         public void OpenWindow()
         {
             _eventLogWindow.Show();
             // _eventLogWindow.Activate();
         }
+
+        #endregion
     }
 }

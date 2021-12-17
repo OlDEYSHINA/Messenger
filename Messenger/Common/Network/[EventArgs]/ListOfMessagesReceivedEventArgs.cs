@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Common.Network._EventArgs_
+﻿namespace Common.Network
 {
+    using System.Collections.Generic;
+
     public class ListOfMessagesReceivedEventArgs
     {
         #region Properties
 
-        public List<Message> Messages;
+        public List<Message> Messages { get; }
 
-        #endregion Properties
+        #endregion
 
         #region Constructors
 
@@ -21,6 +17,6 @@ namespace Common.Network._EventArgs_
             Messages = messages;
         }
 
-        #endregion Constructors
+        #endregion
     }
 }

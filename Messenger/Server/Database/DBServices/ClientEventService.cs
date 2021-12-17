@@ -1,19 +1,17 @@
-﻿using Common.Network.Messages;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Server.Database.DBServices
+﻿namespace Server.Database.DBServices
 {
-    class ClientEventService
+    using System;
+    using System.Collections.Generic;
+
+    using Common.Network.Messages;
+
+    internal class ClientEventService
     {
         #region Fields
 
         private readonly DatabaseController _databaseController;
 
-        #endregion Fields
+        #endregion
 
         #region Constructors
 
@@ -22,7 +20,7 @@ namespace Server.Database.DBServices
             _databaseController = databaseController;
         }
 
-        #endregion Constructors
+        #endregion
 
         #region Methods
 
@@ -31,14 +29,16 @@ namespace Server.Database.DBServices
             return _databaseController.TryAddClientEvent(login, eventText, date);
         }
 
-        public List<EventNote> GetEventLog(DateTime firstDate,DateTime secondDate)
+        public List<EventNote> GetEventLog(DateTime firstDate, DateTime secondDate)
         {
-            return _databaseController.GetEventsList(firstDate,secondDate);
+            return _databaseController.GetEventsList(firstDate, secondDate);
         }
+
         public List<EventNote> GetAllEventLog()
         {
             return _databaseController.GetEventLog();
         }
-        #endregion Methods
+
+        #endregion
     }
 }

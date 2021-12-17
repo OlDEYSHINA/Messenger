@@ -1,14 +1,12 @@
-﻿using Common.Network._Enums_;
-
-namespace Common.Network._EventArgs_
+﻿namespace Common.Network
 {
     public class RegistrationResponseReceivedEventArgs
     {
         #region Properties
 
-        public RegistrationResult RegistrationResult { get; set; }
+        public RegistrationResult RegistrationResult { get; }
 
-        #endregion Properties
+        #endregion
 
         #region Constructors
 
@@ -17,6 +15,6 @@ namespace Common.Network._EventArgs_
             RegistrationResult = result;
         }
 
-        #endregion Constructors
+        #endregion
     }
 }

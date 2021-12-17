@@ -8,21 +8,21 @@
 
         public string Reason { get; set; }
 
-        #endregion Properties
+        #endregion
 
         #region Methods
 
         public MessageContainer GetContainer()
         {
             var container = new MessageContainer
-            {
-                Identifier = nameof(ConnectionResponse),
-                Payload = this
-            };
+                            {
+                                Identifier = nameof(ConnectionResponse),
+                                Payload = this
+                            };
 
             return container;
         }
 
-        #endregion Methods
+        #endregion
     }
 }

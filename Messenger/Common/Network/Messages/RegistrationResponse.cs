@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Common.Network._Enums_;
-
-namespace Common.Network.Messages
+﻿namespace Common.Network.Messages
 {
-    class RegistrationResponse
+    internal class RegistrationResponse
     {
         #region Properties
 
         public RegistrationResult RegistrationResult { get; set; }
 
-        #endregion Properties
+        #endregion
 
         #region Constructors
 
@@ -22,21 +15,21 @@ namespace Common.Network.Messages
             RegistrationResult = result;
         }
 
-        #endregion Constructors
+        #endregion
 
         #region Methods
 
         public MessageContainer GetContainer()
         {
             var container = new MessageContainer
-            {
-                Identifier = nameof(RegistrationResponse),
-                Payload = this
-            };
+                            {
+                                Identifier = nameof(RegistrationResponse),
+                                Payload = this
+                            };
 
             return container;
         }
 
-        #endregion Methods
+        #endregion
     }
 }

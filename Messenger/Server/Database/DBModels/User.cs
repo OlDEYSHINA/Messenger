@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-
-namespace Server.Database.DBModels
+﻿namespace Server.Database.DBModels
 {
-    class User
+    using System.ComponentModel.DataAnnotations;
+
+    internal class User
     {
         #region Properties
 
@@ -15,8 +10,9 @@ namespace Server.Database.DBModels
         public int Id { get; set; }
 
         public string Login { get; set; }
+
         public string Password { get; set; }
 
-        #endregion Properties
+        #endregion
     }
 }

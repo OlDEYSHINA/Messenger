@@ -1,38 +1,35 @@
-﻿using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Client.ViewModels
+﻿namespace Client.ViewModels
 {
-    class SettingsViewModel:BindableBase
-    {
-        private bool _isEnabledEventLog;
-        private bool _isEnabledDarkTheme;
+    using Prism.Mvvm;
 
-        public bool IsEnabledEventLog
-        {
-            get
-            {
-                return _isEnabledEventLog;
-            }
-            set
-            {
-                SetProperty(ref _isEnabledEventLog, value);
-            }
-        }
+    internal class SettingsViewModel : BindableBase
+    {
+        #region Fields
+
+        private readonly ChatViewModel _chatViewModel;
+
+        #endregion
+
+        #region Properties
+
         public bool IsEnabledDarkTheme
         {
-            get
-            {
-                return _isEnabledDarkTheme;
-            }
+            get => _chatViewModel.IsDarkTheme;
             set
             {
-                SetProperty(ref _isEnabledDarkTheme, value);
+                 _chatViewModel.IsDarkTheme= value;
             }
         }
+
+        #endregion
+
+        #region Constructors
+
+        public SettingsViewModel(ChatViewModel chatViewModel)
+        {
+            _chatViewModel = chatViewModel;
+        }
+
+        #endregion
     }
 }

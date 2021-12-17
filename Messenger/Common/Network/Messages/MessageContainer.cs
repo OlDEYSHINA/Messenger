@@ -8,6 +8,6 @@
 
         public object Payload { get; set; }
 
-        #endregion Properties
+        #endregion
     }
 }

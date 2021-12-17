@@ -1,42 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Client.BLL
+﻿namespace Client.BLL
 {
+    using System;
+
     public class ObservableMessage
     {
-        private string _usernameSource;
-        private string _usernameTarget;
-        private string _text;
-        private DateTime _time;
-        private bool _isMyMessage;
-        public string UsernameSource
-        {
-            get => _usernameSource;
-            set => _usernameSource = value;
-        }
-        public string UsernameTarget
-        {
-            get => _usernameTarget;
-            set => _usernameTarget = value;
-        }
-        public string Text
-        {
-            get => _text;
-            set => _text = value;
-        }
-        public DateTime Time
-        {
-            get => _time;
-            set => _time = value;
-        }
-        public bool IsMyMessage
-        {
-            get => _isMyMessage;
-            set => _isMyMessage = value;
-        }
+        #region Properties
+
+        public string UsernameSource { get; set; }
+
+        public string UsernameTarget { get; set; }
+
+        public string Text { get; set; }
+
+        public DateTime Time { get; set; }
+
+        public bool IsMyMessage { get; set; }
+
+        #endregion
     }
 }

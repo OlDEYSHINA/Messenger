@@ -57,7 +57,7 @@
     <Compile Include="Network\Messages\ConnectionResponse.cs" />
     <Compile Include="Network\Messages\MessageBroadcast.cs" />
     <Compile Include="Network\Messages\MessageContainer.cs" />
-    <Compile Include="Network\Messages\MessageRequest.cs" />
+    <Compile Include="Network\Messages\MessageResponse.cs" />
     <Compile Include="Network\UsersListsManager.cs" />
     <Compile Include="Network\WsClient.cs" />
     <Compile Include="Network\WsConnection.cs" />

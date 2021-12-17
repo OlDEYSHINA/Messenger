@@ -1,36 +1,13 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using Common;
-
-
-namespace Client.Models
+﻿namespace Client.Models
 {
-    class LoginModel : ILoginModel
+    internal class LoginModel
     {
-        private string _username;
-        private string _password;
+        #region Properties
 
-        public string Username
-        {
-            get
-            {
-                return _username;
-            }
-            set
-            {
-                _username = value;
-            }
-        }
-        public string Password
-        {
-            get
-            {
-                return _password;
-            }
-            set
-            {
-                _password = value;
-            }
-        }
+        public string Username { get; set; }
+
+        public string Password { get; set; }
+
+        #endregion
     }
 }

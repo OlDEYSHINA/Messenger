@@ -1,77 +1,59 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Configuration;
-using System.IO;
-using System.Net;
-
-namespace Server.Settings
+﻿namespace Server.Settings
 {
-    class SettingsManager
+    using System;
+    using System.Configuration;
+    using System.IO;
+    using System.Net;
+
+    using Newtonsoft.Json;
+
+    internal class SettingsManager
     {
         #region Fields
+
         public readonly Settings DefaultSettings = new Settings
-        {
-            ConnectionString = "data source=(localdb)\\MSSQLLocalDB;Initial " +
-               "Catalog=userstore;Integrated Security=True;",
-            DBName = "DBConnection",
-            Timeout = 3000000000, //5 минут, c интервалом проверки 10 секунд
-            Ip = "0.0.0.0",
-            Port = 65000,
-            ProviderName = "System.Data.SqlClient"
-        };
+                                                   {
+                                                       ConnectionString = "data source=(localdb)\\MSSQLLocalDB;Initial " +
+                                                                          "Catalog=userstore;Integrated Security=True;",
+                                                       DbName = "DBConnection",
+                                                       Timeout = 3000000000, //5 минут, c интервалом проверки 10 секунд
+                                                       Ip = "0.0.0.0",
+                                                       Port = 65000,
+                                                       ProviderName = "System.Data.SqlClient"
+                                                   };
 
         private readonly string DefaultPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
-                                                    "\\Messanger\\ServerSettings.txt";
-        private int _port;
-        private long _timeout;
+                                              "\\Messanger\\ServerSettings.txt";
 
-        private IPAddress _ip;
-
-        private ConnectionStringSettings _connectionSettings;
-
-        #endregion Fields
+        #endregion
 
         #region Properties
 
-        public int Port
-        {
-            get => _port;
-            set => _port = value;
-        }
+        public int Port { get; set; }
 
-        public long Timeout
-        {
-            get => _timeout;
-            set => _timeout = value;
-        }
+        public long Timeout { get; set; }
 
-        public IPAddress Ip
-        {
-            get => _ip;
-            set => _ip = value;
-        }
+        public IPAddress Ip { get; set; }
 
-        public ConnectionStringSettings ConnectionSettings
-        {
-            get => _connectionSettings;
-            set => _connectionSettings = value;
-        }
+        public ConnectionStringSettings ConnectionSettings { get; set; }
 
-        #endregion Properties
+        #endregion
 
         #region Constructors
 
         public SettingsManager()
         {
+            Settings settings = LoadFromFile(DefaultPath);
 
-            var settings = LoadFromFile(DefaultPath);
             if (settings.ConnectionString != null)
             {
                 Ip = IPAddress.Parse(settings.Ip);
                 Port = settings.Port;
                 Timeout = settings.Timeout;
-                ConnectionSettings = new ConnectionStringSettings(settings.DBName,
-                    settings.ConnectionString, settings.ProviderName);
+                ConnectionSettings = new ConnectionStringSettings(
+                    settings.DbName,
+                    settings.ConnectionString,
+                    settings.ProviderName);
             }
             else
             {
@@ -81,53 +63,63 @@ namespace Server.Settings
                 Ip = IPAddress.Parse(settings.Ip);
                 Port = settings.Port;
                 Timeout = settings.Timeout;
-                ConnectionSettings = new ConnectionStringSettings(settings.DBName,
-                    settings.ConnectionString, settings.ProviderName);
+                ConnectionSettings = new ConnectionStringSettings(
+                    settings.DbName,
+                    settings.ConnectionString,
+                    settings.ProviderName);
             }
-
-
         }
 
-        #endregion Constructors
+        #endregion
 
         #region Methods
 
         public void SaveToFile(Settings settings, string savePath)
         {
             Directory.CreateDirectory(Path.GetDirectoryName(savePath));
-            JsonSerializer serializer = new JsonSerializer();
+            var serializer = new JsonSerializer();
             serializer.NullValueHandling = NullValueHandling.Include;
             serializer.TypeNameHandling = TypeNameHandling.All;
             serializer.Formatting = Formatting.Indented;
-            using (StreamWriter sw = new StreamWriter(savePath))
-            using (JsonWriter writer = new JsonTextWriter(sw))
+
+            using (var sw = new StreamWriter(savePath))
             {
-                serializer.Serialize(writer, settings);
-            };
+                using (JsonWriter writer = new JsonTextWriter(sw))
+                {
+                    serializer.Serialize(writer, settings);
+                }
+            }
+
+            ;
         }
 
         public Settings LoadFromFile(string loadPath)
         {
-            Settings settings = new Settings();
+            var settings = new Settings();
+
             try
             {
-                JsonSerializer serializer = new JsonSerializer();
+                var serializer = new JsonSerializer();
                 serializer.NullValueHandling = NullValueHandling.Include;
                 serializer.TypeNameHandling = TypeNameHandling.All;
                 serializer.Formatting = Formatting.None;
-                using (StreamReader sr = new StreamReader(loadPath))
-                using (JsonReader reader = new JsonTextReader(sr))
+
+                using (var sr = new StreamReader(loadPath))
                 {
-                    settings = (Settings)serializer.Deserialize<Settings>(reader);
+                    using (JsonReader reader = new JsonTextReader(sr))
+                    {
+                        settings = serializer.Deserialize<Settings>(reader);
+                    }
                 }
             }
             catch (Exception)
             {
                 return settings;
             }
+
             return settings;
         }
 
-        #endregion Methods
+        #endregion
     }
 }

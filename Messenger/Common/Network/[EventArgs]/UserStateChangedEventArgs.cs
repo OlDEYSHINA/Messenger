@@ -2,12 +2,11 @@
 {
     public class UserStateChangedEventArgs
     {
-
         #region Properties
 
-        public UserState user { get; set; }
+        public UserState user { get; }
 
-        #endregion Properties
+        #endregion
 
         #region Constructors
 
@@ -16,6 +15,6 @@
             user = userStatus;
         }
 
-        #endregion Constructors
+        #endregion
     }
 }

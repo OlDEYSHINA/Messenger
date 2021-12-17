@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Common.Network.Messages
+﻿namespace Common.Network.Messages
 {
+    using System;
+
     public class EventLogRequest
     {
         #region Properties
 
-        public DateTime FirstDate;
-        public DateTime SecondDate;
+        public DateTime FirstDate { get; set; }
 
-        #endregion Properties
+        public DateTime SecondDate { get; set; }
+
+        #endregion
 
         #region Constructors
 
@@ -23,21 +20,21 @@ namespace Common.Network.Messages
             SecondDate = secondDate;
         }
 
-        #endregion Constructors
+        #endregion
 
         #region Methods
 
         public MessageContainer GetContainer()
         {
             var container = new MessageContainer
-            {
-                Identifier = nameof(EventLogRequest),
-                Payload = this
-            };
+                            {
+                                Identifier = nameof(EventLogRequest),
+                                Payload = this
+                            };
 
             return container;
         }
 
-        #endregion Methods
+        #endregion
     }
 }

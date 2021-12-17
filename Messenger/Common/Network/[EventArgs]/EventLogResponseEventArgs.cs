@@ -1,19 +1,16 @@
-﻿using Common.Network.Messages;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Common.Network._EventArgs_
+﻿namespace Common.Network
 {
+    using System.Collections.Generic;
+
+    using Messages;
+
     public class EventLogResponseEventArgs
     {
         #region Properties
 
-        public List<EventNote> EventLog;
+        public List<EventNote> EventLog { get; }
 
-        #endregion Properties
+        #endregion
 
         #region Constructors
 
@@ -22,6 +19,6 @@ namespace Common.Network._EventArgs_
             EventLog = eventLog;
         }
 
-        #endregion Constructors
+        #endregion
     }
 }

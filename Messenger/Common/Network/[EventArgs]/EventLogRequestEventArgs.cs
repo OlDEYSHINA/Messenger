@@ -1,30 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Common.Network._EventArgs_
+﻿namespace Common.Network
 {
+    using System;
+
     public class EventLogRequestEventArgs
     {
         #region Properties
 
-        public DateTime FirstDate;
-        public DateTime SecondDate;
-        public WsConnection Connection;
+        public DateTime FirstDate { get; }
 
-        #endregion Properties
+        public DateTime SecondDate { get; }
+
+        public WsConnection Connection { get; }
+
+        #endregion
 
         #region Constructors
 
-        public EventLogRequestEventArgs(WsConnection connection, DateTime firstDate,DateTime secondTime)
+        public EventLogRequestEventArgs(WsConnection connection, DateTime firstDate, DateTime secondTime)
         {
             Connection = connection;
             FirstDate = firstDate;
             SecondDate = secondTime;
         }
 
-        #endregion Constructors
+        #endregion
     }
 }

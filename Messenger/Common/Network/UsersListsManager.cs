@@ -1,32 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Common.Network
+﻿namespace Common.Network
 {
+    using System;
+    using System.Collections.Generic;
+
     public class UsersListsManager
     {
         #region Fields
 
-        private List<UserState> _usersStatuses = new List<UserState>();
-        private List<User> _usersGuid = new List<User>();
-        #endregion Fields
+        private readonly List<UserState> _usersStatuses;
+        private readonly List<User> _usersGuid;
+
+        #endregion
 
         #region Constructors
 
         public UsersListsManager()
         {
+            _usersStatuses = new List<UserState>();
+            _usersGuid = new List<User>();
             _usersStatuses.Add(new UserState("Global", true));
         }
 
-        #endregion Constructors
+        #endregion
+
         #region Methods
+
         public void AddToLists(string login, Guid id)
         {
-            User addUser = new User(login, id);
+            var addUser = new User(login, id);
             _usersGuid.Add(addUser);
+
             if (_usersStatuses.Find(x => x.Name == login) == null)
             {
-                UserState userStatus = new UserState(login, true);
+                var userStatus = new UserState(login, true);
                 _usersStatuses.Add(userStatus);
             }
             else
@@ -35,33 +41,36 @@ namespace Common.Network
             }
         }
 
-
         /// <summary>
         /// Удаление пользователя из листа сервера и смена состояния в листе клиента
         /// </summary>
-        /// <param name="id">Guid пользователя</param>
+        /// <param name = "id">Guid пользователя</param>
         public void DeleteFromLists(Guid id)
         {
-            var findedUser = _usersGuid.Find(x => x.ID == id);
+            User findedUser = _usersGuid.Find(x => x.Id == id);
+
             if (findedUser == null)
             {
                 return;
             }
+
             _usersGuid.Remove(findedUser);
             _usersStatuses.Find(x => x.Name == findedUser.Name).IsOnline = false;
         }
-        public void LoadListFromDB(List<string> users)
+
+        public void LoadListFromDb(List<string> users)
         {
-            foreach (var user in users)
+            foreach (string user in users)
             {
                 _usersStatuses.Add(new UserState(user, false));
             }
         }
+
         public bool IsUserOnline(string name)
         {
-            var finded = _usersStatuses.Find(x => x.Name == name);
-            return finded.IsOnline;
+            return _usersStatuses.Find(x => x.Name == name).IsOnline;
         }
+
         public List<UserState> GetUsersStatuses()
         {
             return _usersStatuses;
@@ -69,14 +78,14 @@ namespace Common.Network
 
         public Guid GetUserGuid(string name)
         {
-            var finded = _usersGuid.Find(x => x.Name == name);
-            return finded.ID;
+            return _usersGuid.Find(x => x.Name == name).Id;
         }
+
         public string GetUserName(Guid id)
         {
-            var findedUser = _usersGuid.Find(x => x.ID == id);
-            return findedUser?.Name;
+            return _usersGuid.Find(x => x.Id == id)?.Name;
         }
-        #endregion Methods
+
+        #endregion
     }
 }

@@ -5,9 +5,10 @@
         #region Properties
 
         public string Login { get; set; }
+
         public string Password { get; set; }
 
-        #endregion Properties
+        #endregion
 
         #region Constructors
 
@@ -17,21 +18,21 @@
             Password = password;
         }
 
-        #endregion Constructors
+        #endregion
 
         #region Methods
 
         public MessageContainer GetContainer()
         {
             var container = new MessageContainer
-            {
-                Identifier = nameof(ConnectionRequest),
-                Payload = this
-            };
+                            {
+                                Identifier = nameof(ConnectionRequest),
+                                Payload = this
+                            };
 
             return container;
         }
 
-        #endregion Methods
+        #endregion
     }
 }

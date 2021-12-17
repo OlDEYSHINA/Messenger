@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Common.Network.Messages
+﻿namespace Common.Network.Messages
 {
+    using System.Collections.Generic;
+
     public class EventLogResponse
     {
         #region Properties
 
-        public List<EventNote> EventLog;
+        public List<EventNote> EventLog { get; set; }
 
-        #endregion Properties
+        #endregion
 
         #region Constructors
 
@@ -21,21 +17,21 @@ namespace Common.Network.Messages
             EventLog = eventLog;
         }
 
-        #endregion Constructors
+        #endregion
 
         #region Methods
 
         public MessageContainer GetContainer()
         {
             var container = new MessageContainer
-            {
-                Identifier = nameof(EventLogResponse),
-                Payload = this
-            };
+                            {
+                                Identifier = nameof(EventLogResponse),
+                                Payload = this
+                            };
 
             return container;
         }
 
-        #endregion Methods
+        #endregion
     }
 }
