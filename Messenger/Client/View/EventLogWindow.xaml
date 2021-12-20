@@ -15,7 +15,7 @@
         <Label Content="до" HorizontalAlignment="Left" Margin="336,10,0,0" VerticalAlignment="Top"/>
         <ListBox ItemsSource="{Binding EventLog, Mode=TwoWay}" ItemContainerStyle="{StaticResource EventLogListBoxItemStyle}" HorizontalAlignment="Left" Height="342" Margin="10,67,0,0" VerticalAlignment="Top" Width="772"/>
         <Button Command="{Binding Request}" Content="Запросить" HorizontalAlignment="Left" Margin="512,10,0,0" VerticalAlignment="Top" Width="75" Height="24"/>
-        <TextBox  HorizontalAlignment="Left" Height="23" Margin="114,39,0,0" TextWrapping="Wrap" Text="{Binding SearchString}" VerticalAlignment="Top" Width="160"/>
+        <TextBox  HorizontalAlignment="Left" Height="23" Margin="114,39,0,0" TextWrapping="Wrap" Text="{Binding SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="160"/>
         <Label Content="Поиск:" HorizontalAlignment="Left" Margin="10,36,0,0" VerticalAlignment="Top" Width="99"/>
         <Button Command="{Binding Search}" Content="Найти" HorizontalAlignment="Left" Margin="288,41,0,0" VerticalAlignment="Top" Width="75"/>
     </Grid>

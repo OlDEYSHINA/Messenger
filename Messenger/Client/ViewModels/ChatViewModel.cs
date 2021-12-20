@@ -1,23 +1,17 @@
 ﻿namespace Client.ViewModels
 {
+    using BLL;
+    using Common;
+    using Common.Network;
+    using Models;
+    using Newtonsoft.Json;
+    using Prism.Commands;
+    using Prism.Mvvm;
+    using Services;
     using System;
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Windows;
-
-    using BLL;
-
-    using Common;
-    using Common.Network;
-
-    using Models;
-
-    using Newtonsoft.Json;
-
-    using Prism.Commands;
-    using Prism.Mvvm;
-
-    using Services;
 
     internal class ChatViewModel : BindableBase
     {
@@ -34,7 +28,6 @@
         private readonly ChatModel _chatModel;
         private readonly ChatMenuService _chatMenuService;
         private EventLogViewModel _eventLogViewModel;
-        private SettingsViewModel _settingsViewModel;
 
         #endregion
 
@@ -93,10 +86,7 @@
             get => _message;
             set
             {
-                if (value.Length > 300)
-                {
-                }
-                else
+                if (value?.Length < 300)
                 {
                     SetProperty(ref _message, value);
                 }
@@ -111,7 +101,6 @@
         {
             _myLogin = login;
             _transport = transport;
-            _settingsViewModel = new SettingsViewModel(this);
             _chatModel = new ChatModel(_myLogin, _transport);
             SelectedUser = new UserState("Global", true);
             _chatMenuService = new ChatMenuService();
@@ -122,7 +111,6 @@
             SendMessage = new DelegateCommand(SendMessageToServer, () => true);
 
             MenuExitButton = new DelegateCommand(_chatMenuService.Exit, () => true);
-            MenuSettingsButton = new DelegateCommand(_chatMenuService.Settings, () => true);
             MenuAboutButton = new DelegateCommand(_chatMenuService.About, () => true);
             OpenEventLog = new DelegateCommand(OpenEventLogWindow, () => true);
 
@@ -144,15 +132,15 @@
             if (!string.IsNullOrEmpty(Message))
             {
                 var message = new Message
-                              {
-                                  Text = Message,
-                                  UsernameSource = _myLogin,
-                                  UsernameTarget = SelectedUser.Name,
-                                  Time = DateTime.Now
-                              };
+                {
+                    Text = Message,
+                    UsernameSource = _myLogin,
+                    UsernameTarget = SelectedUser.Name,
+                    Time = DateTime.Now
+                };
                 string serializeMessage = JsonConvert.SerializeObject(message);
                 _transport?.Send(serializeMessage);
-                Message = null;
+                Message = string.Empty;
             }
         }
 
@@ -163,7 +151,7 @@
 
         private void HandleUserStateChange(object sender, UserStateChangedEventArgs e)
         {
-            UserState found = UsersStatusesCollection.FirstOrDefault(x => x.Name == e.user.Name);
+            UserState found = UsersStatusesCollection.FirstOrDefault(x => x.Name == e.UserState.Name);
 
             if (found != null)
             {
@@ -172,13 +160,13 @@
                     () =>
                     {
                         UsersStatusesCollection.RemoveAt(foundIndex);
-                        UsersStatusesCollection.Insert(foundIndex, e.user);
-                        found.IsOnline = e.user.IsOnline;
+                        UsersStatusesCollection.Insert(foundIndex, e.UserState);
+                        found.IsOnline = e.UserState.IsOnline;
                     });
             }
             else
             {
-                Application.Current.Dispatcher.Invoke(() => UsersStatusesCollection.Add(e.user));
+                Application.Current.Dispatcher.Invoke(() => UsersStatusesCollection.Add(e.UserState));
             }
         }
 
@@ -195,12 +183,12 @@
                 if (incomeMessage == null)
                 {
                     incomeMessage = new Message
-                                    {
-                                        Text = e.Message,
-                                        UsernameTarget = "Global",
-                                        Time = DateTime.Now,
-                                        UsernameSource = "server"
-                                    };
+                    {
+                        Text = e.Message,
+                        UsernameTarget = "Global",
+                        Time = DateTime.Now,
+                        UsernameSource = "server"
+                    };
                 }
             }
 
@@ -216,17 +204,17 @@
             }
 
             var observableIncome = new ObservableMessage
-                                   {
-                                       UsernameTarget = incomeMessage.UsernameTarget,
-                                       UsernameSource = incomeMessage.UsernameSource,
-                                       Time = incomeMessage.Time,
-                                       IsMyMessage = isMyMessage,
-                                       Text = incomeMessage.Text
-                                   };
+            {
+                UsernameTarget = incomeMessage.UsernameTarget,
+                UsernameSource = incomeMessage.UsernameSource,
+                Time = incomeMessage.Time,
+                IsMyMessage = isMyMessage,
+                Text = incomeMessage.Text
+            };
 
             if (incomeMessage.UsernameTarget == "Global")
             {
-                if (SelectedUser.Name == incomeMessage.UsernameTarget)
+                if (SelectedUser?.Name == incomeMessage.UsernameTarget)
                 {
                     Application.Current.Dispatcher.Invoke(() => ChatMessages.Add(observableIncome));
                 }
@@ -257,13 +245,13 @@
                 bool isMyMessage = message.UsernameSource == _myLogin;
 
                 var observableMessage = new ObservableMessage
-                                        {
-                                            IsMyMessage = isMyMessage,
-                                            Text = message.Text,
-                                            UsernameSource = message.UsernameSource,
-                                            Time = message.Time,
-                                            UsernameTarget = message.UsernameTarget
-                                        };
+                {
+                    IsMyMessage = isMyMessage,
+                    Text = message.Text,
+                    UsernameSource = message.UsernameSource,
+                    Time = message.Time,
+                    UsernameTarget = message.UsernameTarget
+                };
                 _chatModel.NewMessage(observableMessage);
             }
 
@@ -272,7 +260,7 @@
 
         private void HandleUsersStatusesRequest(object sender, UsersStatusesReceivedEventArgs e)
         {
-            UsersStatusesCollection = new ObservableCollection<UserState>(e.UsersStatuses);
+            UsersStatusesCollection = new ObservableCollection<UserState>(e.UsersState);
         }
 
         #endregion

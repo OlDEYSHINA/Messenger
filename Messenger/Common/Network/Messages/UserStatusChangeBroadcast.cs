@@ -4,15 +4,15 @@
     {
         #region Properties
 
-        public UserState User { get; set; }
+        public UserState UserState { get; set; }
 
         #endregion
 
         #region Constructors
 
-        public UserStatusChangeBroadcast(UserState incomeUser)
+        public UserStatusChangeBroadcast(UserState userState)
         {
-            User = incomeUser;
+            UserState = userState;
         }
 
         #endregion

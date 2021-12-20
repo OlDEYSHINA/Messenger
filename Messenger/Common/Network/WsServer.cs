@@ -59,9 +59,11 @@
             _listenAddress = listenAddress;
             _connections = new ConcurrentDictionary<Guid, WsConnection>();
             _timeoutClients = new Dictionary<Guid, long>();
-            _timeoutTimer = new Timer();
-            _timeoutTimer.AutoReset = true;
-            _timeoutTimer.Interval = 10000;
+            _timeoutTimer = new Timer
+            {
+                AutoReset = true,
+                Interval = 10000
+            };
             _timeoutTimer.Elapsed += OnTimeoutEvent;
             _timeoutTimer.Enabled = true;
             _timeoutTimer.Start();
@@ -172,7 +174,6 @@
 
         public void CheckLoginResponse(
             string login,
-            string password,
             WsConnection connection,
             Guid clientId,
             ConnectionResponse connectionResponse,
@@ -300,7 +301,6 @@
 
         internal void FreeConnection(Guid connectionId)
         {
-            // отправка изменений о состоянии пользователя
             var newUser = new UserState(_usersLists.GetUserName(connectionId), false);
             var newChange = new UserStatusChangeBroadcast(newUser);
 
@@ -326,9 +326,9 @@
 
             foreach (Guid client in timeClients)
             {
+                string name = _usersLists.GetUserName(client);
                 _timeoutClients?.Remove(client);
                 _connections[client]?.Close();
-                string name = _usersLists.GetUserName(client);
                 Console.WriteLine("Клиент " + '"' + name + '"' + " отключен по бездействию");
             }
         }
