@@ -1,5 +1,4 @@
-﻿using Client.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,17 +12,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Client
+namespace Client.View
 {
     /// <summary>
-    /// Interaction logic for LoginWindow.xaml
+    /// Interaction logic for SettingsWindow.xaml
     /// </summary>
-    public partial class LoginWindow : Window
+    public partial class SettingsWindow : Window
     {
-        public LoginWindow()
+        public SettingsWindow()
         {
             InitializeComponent();
-            //DataContext = new LoginVM();
         }
     }
 }

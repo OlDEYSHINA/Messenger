@@ -5,6 +5,9 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+
+using Prism.Ioc;
+using Prism.Mvvm;
 using Client.ViewModels;
 
 namespace Client

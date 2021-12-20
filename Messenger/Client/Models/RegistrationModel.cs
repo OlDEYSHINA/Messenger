@@ -1,49 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Client.Models
+﻿namespace Client.Models
 {
-    class RegistrationModel : IRegistrationModel
+    internal class RegistrationModel
     {
-        private string _username;
-        private string _password;
-        private string _eMail;
+        #region Properties
 
-        public string Username
-        {
-            get
-            {
-                return _username;
-            }
-            set
-            {
-                _username = value;
-            }
-        }
-        public string Password
-        {
-            get
-            {
-                return _password;
-            }
-            set
-            {
-                _password = value;
-            }
-        }
-        public string EMail
-        {
-            get
-            {
-                return _eMail;
-            }
-            set
-            {
-                _eMail = value;
-            }
-        }
+        public string Username { get; set; }
+
+        public string Password { get; set; }
+
+        #endregion
     }
 }

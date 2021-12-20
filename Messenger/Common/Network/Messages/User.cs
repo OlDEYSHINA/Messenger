@@ -1,15 +1,25 @@
-﻿using System;
-
-namespace Common
+﻿namespace Common
 {
+    using System;
+
     public class User
     {
+        #region Properties
+
         public string Name { get; set; }
-        public Guid ID { get; set; }
+
+        public Guid Id { get; set; }
+
+        #endregion
+
+        #region Constructors
+
         public User(string name, Guid id)
         {
             Name = name;
-            ID = id;
+            Id = id;
         }
+
+        #endregion
     }
 }

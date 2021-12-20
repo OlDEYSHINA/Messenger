@@ -1,14 +1,12 @@
-﻿using Common.Network._Enums_;
-
-namespace Common.Network.Messages
+﻿namespace Common.Network.Messages
 {
-    class LoginResponse
+    internal class LoginResponse
     {
         #region Properties
 
         public LoginResult LoginResult { get; set; }
 
-        #endregion Properties
+        #endregion
 
         #region Constructors
 
@@ -17,21 +15,21 @@ namespace Common.Network.Messages
             LoginResult = result;
         }
 
-        #endregion Constructors
+        #endregion
 
         #region Methods
 
         public MessageContainer GetContainer()
         {
             var container = new MessageContainer
-            {
-                Identifier = nameof(RegistrationResponse),
-                Payload = this
-            };
+                            {
+                                Identifier = nameof(RegistrationResponse),
+                                Payload = this
+                            };
 
             return container;
         }
 
-        #endregion Methods
+        #endregion
     }
 }

@@ -1,47 +1,15 @@
-﻿using Prism.Commands;
-using Prism.Mvvm;
-using System;
-using System.Threading;
-using System.Windows;
-
-using Client.BLL;
-
-using Common.Network;
-using System.ComponentModel;
-
-namespace Client.ViewModels
+﻿namespace Client.ViewModels
 {
-    class MainWindowViewModel : BindableBase
+    using System.Windows;
+
+    using Common.Network;
+
+    using Prism.Mvvm;
+
+    internal class MainWindowViewModel : BindableBase
     {
-       
-        ChatViewModel chatViewModel;
-        RegistrationViewModel registrationViewModel;
-        LoginVM loginVM;
-        private ITransport _transport;
-        object _currentContentVM;
-        public object CurrentContentVM
-        {
-            get
-            {
-                return _currentContentVM;
-            }
-            set
-            {
-                SetProperty(ref _currentContentVM, value);
-            }
-        }
-        private string _outputView;
-        public string OutputView
-        {
-            get
-            {
-                return _outputView;
-            }
-            set
-            {
-                SetProperty(ref _outputView, value);
-            }
-        }
+        #region Enums
+
         /// <summary>
         /// Выбор отображения в главном окне
         /// </summary>
@@ -52,44 +20,90 @@ namespace Client.ViewModels
             Chat
         }
 
-        public void ChangeView(ViewType viewType)
+        #endregion
+
+        #region Fields
+
+        private ChatViewModel chatViewModel;
+        private readonly RegistrationViewModel registrationViewModel;
+        private readonly LoginVM loginVM;
+        private ITransport _transport;
+        private object _currentContentVM;
+        private string _outputView;
+
+        #endregion
+
+        #region Properties
+
+        public object CurrentContentVM
         {
-            switch (viewType)
-            {
-                case ViewType.Login:
-                    {
-                        CurrentContentVM = loginVM;
-                        
-                        break;
-                    }
-                case ViewType.Chat:
-                    {
-                        
-                        chatViewModel = new ChatViewModel(this, _transport,loginVM.UsernameLogin);
-                        CurrentContentVM = chatViewModel;
-                        break;
-                    }
-                case ViewType.Registration:
-                    {
-                        CurrentContentVM = registrationViewModel;
-                        break;
-                    }
-            }
+            get => _currentContentVM;
+            set => SetProperty(ref _currentContentVM, value);
         }
-       
+
+        public string OutputView
+        {
+            get => _outputView;
+            set => SetProperty(ref _outputView, value);
+        }
+
+        #endregion
+
+        #region Constructors
+
         public MainWindowViewModel()
         {
             _transport = new WsClient();
             loginVM = new LoginVM(this, _transport);
             registrationViewModel = new RegistrationViewModel(this, _transport);
-            
+
             ChangeView(ViewType.Login);
             Application.Current.Exit += Current_Exit;
+        }
+
+        #endregion
+
+        #region Methods
+
+        public void ChangeView(ViewType viewType)
+        {
+            switch (viewType)
+            {
+                case ViewType.Login:
+                {
+                    CurrentContentVM = loginVM;
+
+                    break;
+                }
+
+                case ViewType.Chat:
+                {
+                    chatViewModel = new ChatViewModel(this, _transport, loginVM.UsernameLogin);
+                    CurrentContentVM = chatViewModel;
+
+                    break;
+                }
+
+                case ViewType.Registration:
+                {
+                    CurrentContentVM = registrationViewModel;
+
+                    break;
+                }
+            }
+        }
+
+        public void ReloadWsClient()
+        {
+            _transport = null;
+            _transport = new WsClient();
         }
 
         private void Current_Exit(object sender, ExitEventArgs e)
         {
             _transport.Disconnect();
         }
+
+        #endregion
     }
 }

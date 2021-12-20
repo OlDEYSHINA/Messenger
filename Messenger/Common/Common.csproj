@@ -40,6 +40,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Network\Messages\EventLogRequest.cs" />
+    <Compile Include="Network\Messages\EventLogResponse.cs" />
     <Compile Include="Network\Messages\EventNote.cs" />
     <Compile Include="Network\Messages\ListOfMessages.cs" />
     <Compile Include="Network\Messages\ListOfMessagesRequest.cs" />
@@ -55,7 +57,7 @@
     <Compile Include="Network\Messages\ConnectionResponse.cs" />
     <Compile Include="Network\Messages\MessageBroadcast.cs" />
     <Compile Include="Network\Messages\MessageContainer.cs" />
-    <Compile Include="Network\Messages\MessageRequest.cs" />
+    <Compile Include="Network\Messages\MessageResponse.cs" />
     <Compile Include="Network\UsersListsManager.cs" />
     <Compile Include="Network\WsClient.cs" />
     <Compile Include="Network\WsConnection.cs" />
@@ -65,6 +67,8 @@
     <Compile Include="Network\[Enums]\ResultCodes.cs" />
     <Compile Include="Network\[EventArgs]\CheckLoginEventArgs.cs" />
     <Compile Include="Network\[EventArgs]\ConnectionStateChangedEventArgs.cs" />
+    <Compile Include="Network\[EventArgs]\EventLogRequestEventArgs.cs" />
+    <Compile Include="Network\[EventArgs]\EventLogResponseEventArgs.cs" />
     <Compile Include="Network\[EventArgs]\ListOfMessagesBroadcastEventArgs.cs" />
     <Compile Include="Network\[EventArgs]\ListOfMessagesReceivedEventArgs.cs" />
     <Compile Include="Network\[EventArgs]\LoginResponseReceivedEventArgs.cs" />

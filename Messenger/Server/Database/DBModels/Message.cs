@@ -1,9 +1,9 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-
-namespace Server.Database.DBModels
+﻿namespace Server.Database.DBModels
 {
-    public class Message
+    using System;
+    using System.ComponentModel.DataAnnotations;
+
+    internal class Message
     {
         #region Properties
 
@@ -11,10 +11,13 @@ namespace Server.Database.DBModels
         public int Id { get; set; }
 
         public string SourceUsername { get; set; }
+
         public string TargetUsername { get; set; }
+
         public string MessageText { get; set; }
 
         public DateTime Date { get; set; }
-        #endregion Properties
+
+        #endregion
     }
 }

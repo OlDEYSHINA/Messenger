@@ -1,19 +1,12 @@
-﻿using Common.Network._Enums_;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Common.Network._EventArgs_
+﻿namespace Common.Network
 {
     public class LoginResponseReceivedEventArgs
     {
         #region Properties
 
-        public LoginResult LoginResult { get; set; }
+        public LoginResult LoginResult { get; }
 
-        #endregion Properties
+        #endregion
 
         #region Constructors
 
@@ -22,6 +15,6 @@ namespace Common.Network._EventArgs_
             LoginResult = result;
         }
 
-        #endregion Constructors
+        #endregion
     }
 }

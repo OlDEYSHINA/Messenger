@@ -1,96 +1,79 @@
-﻿using Client.BLL;
-using Client.Models;
-
-using Common.Network;
-using Common.Network._Enums_;
-using Common.Network._EventArgs_;
-using Prism.Commands;
-using Prism.Mvvm;
-using System;
-using System.Windows;
-
-namespace Client.ViewModels
+﻿namespace Client.ViewModels
 {
-    class LoginVM : BindableBase
+    using System;
+    using System.Windows;
+
+    using Common.Network;
+
+    using Models;
+
+    using Prism.Commands;
+    using Prism.Mvvm;
+
+    internal class LoginVM : BindableBase
     {
+        #region Fields
+
         private string _username;
         private string _password;
 
         private bool _correctUsername;
         private bool _correctPassword;
         private bool _enableLoginView;
+        private bool _enableConnectionButton;
 
         private string _errorLabel;
         private string _serverAddress;
         private string _serverPort;
 
         private Visibility _visibility;
-        private ITransport _transport;
-        private ILoginModel _login;
-        MainWindowViewModel _mainWindowViewModel;
+        private readonly ITransport _transport;
+        private readonly LoginModel _login;
+        private readonly MainWindowViewModel _mainWindowViewModel;
+
+        #endregion
+
+        #region Properties
 
         public Visibility Visibility
         {
-            get
-            {
-                return _visibility;
-            }
-            set
-            {
-                SetProperty(ref _visibility, value);
-            }
+            get => _visibility;
+            set => SetProperty(ref _visibility, value);
         }
+
         public bool EnableLoginView
         {
-            get
-            {
-                return _enableLoginView;
-            }
-            set
-            {
-                SetProperty(ref _enableLoginView, value);
-            }
+            get => _enableLoginView;
+            set => SetProperty(ref _enableLoginView, value);
         }
+
+        public bool EnableConnectionButton
+        {
+            get => _enableConnectionButton;
+            set => SetProperty(ref _enableConnectionButton, value);
+        }
+
         public string ErrorLabel
         {
-            get
-            {
-                return _errorLabel;
-            }
-            set
-            {
-                SetProperty(ref _errorLabel, value);
-            }
+            get => _errorLabel;
+            set => SetProperty(ref _errorLabel, value);
         }
 
         public string ServerAddress
         {
-            get
-            {
-                return _serverAddress;
-            }
-            set
-            {
-                SetProperty(ref _serverAddress, value);
-            }
+            get => _serverAddress;
+            set => SetProperty(ref _serverAddress, value);
         }
+
         public string ServerPort
         {
-            get
-            {
-                return _serverPort;
-            }
-            set
-            {
-                SetProperty(ref _serverPort, value);
-            }
+            get => _serverPort;
+            set => SetProperty(ref _serverPort, value);
         }
+
         public string UsernameLogin
         {
-            get
-            {
-                return _username;
-            }
+            get => _username;
             set
             {
                 if (string.IsNullOrEmpty(value))
@@ -100,7 +83,6 @@ namespace Client.ViewModels
                 }
                 else
                 {
-
                     SetProperty(ref _username, value);
                     _correctUsername = true;
                 }
@@ -109,10 +91,7 @@ namespace Client.ViewModels
 
         public string PasswordLogin
         {
-            get
-            {
-                return _password;
-            }
+            get => _password;
             set
             {
                 if (string.IsNullOrEmpty(value))
@@ -127,9 +106,16 @@ namespace Client.ViewModels
                 }
             }
         }
+
         public DelegateCommand SendCommand { get; }
+
         public DelegateCommand Registration { get; }
+
         public DelegateCommand StartConnection { get; }
+
+        #endregion
+
+        #region Constructors
 
         public LoginVM(MainWindowViewModel mainWindowViewModel, ITransport transport)
         {
@@ -143,51 +129,61 @@ namespace Client.ViewModels
             _correctPassword = false;
             _correctUsername = false;
             _enableLoginView = false;
+            EnableConnectionButton = true;
 #if DEBUG
             ServerAddress = "127.0.0.1";
             ServerPort = "65000";
 #endif
         }
 
-        private void HandleButtonStartConnectionClick()
-        {
-            try
-            {
-            
-            _transport.ConnectionStateChanged += HandleConnectionStateChanged;
-            // _currentTransport.MessageReceived += HandleMessageReceived;
-            _transport.Connect(_serverAddress, _serverPort);
-            }
-            catch (Exception ex)
-            {
-                ErrorLabel=ex.Message;
-               // SetDefaultButtonState();
-            }
-        }
-       
+        #endregion
+
+        #region Methods
+
         public void ConfirmLogin()
         {
-
             if (_correctUsername & _correctPassword)
             {
                 _login.Username = _username;
                 _login.Password = _password;
                 EnableLoginView = false;
-                _transport?.Login(_login.Username,_login.Password);
+                _transport?.Login(_login.Username, _login.Password);
             }
-            else
+            else if (UsernameLogin != null && PasswordLogin != null)
             {
-                // Вывод ошибки в окно
+                UsernameLogin = UsernameLogin;
+                PasswordLogin = PasswordLogin;
             }
         }
 
-        private void HandleLoginReceived(object sender,LoginResponseReceivedEventArgs e)
+        public void ShowRegistrationView()
+        {
+            _mainWindowViewModel.ChangeView(MainWindowViewModel.ViewType.Registration);
+        }
+
+        private void HandleButtonStartConnectionClick()
+        {
+            try
+            {
+                ErrorLabel = "Попытка подключиться к серверу";
+                EnableConnectionButton = false;
+                _transport.ConnectionStateChanged += HandleConnectionStateChanged;
+                _transport.Connect(_serverAddress, _serverPort);
+            }
+            catch (Exception ex)
+            {
+                EnableConnectionButton = true;
+                ErrorLabel = ex.Message;
+            }
+        }
+
+        private void HandleLoginReceived(object sender, LoginResponseReceivedEventArgs e)
         {
             if (e.LoginResult == LoginResult.Ok)
             {
                 _mainWindowViewModel.ChangeView(MainWindowViewModel.ViewType.Chat);
             }
-            else if(e.LoginResult == LoginResult.UnknownUser)
+            else if (e.LoginResult == LoginResult.UnknownUser)
             {
                 ErrorLabel = "Неизвестный пользователь";
             }
@@ -199,36 +195,35 @@ namespace Client.ViewModels
             {
                 ErrorLabel = "Неизвестная ошибка";
             }
-
         }
-
 
         private void HandleConnectionStateChanged(object sender, ConnectionStateChangedEventArgs e)
         {
+            EnableConnectionButton = true;
             ErrorLabel = e.Reason;
+
             if (e.Connected)
             {
                 if (string.IsNullOrEmpty(e.ClientName))
                 {
                     EnableLoginView = true;
                 }
-                else
+                else if (e.Reason == null)
                 {
                     _mainWindowViewModel.ChangeView(MainWindowViewModel.ViewType.Chat);
+                }
+                else
+                {
+                    EnableLoginView = true;
                 }
             }
             else
             {
                 EnableLoginView = false;
-                _login.Username = null;
-                _login.Password = null;
                 _mainWindowViewModel.ChangeView(MainWindowViewModel.ViewType.Login);
             }
         }
 
-        public void ShowRegistrationView()
-        {
-            _mainWindowViewModel.ChangeView(MainWindowViewModel.ViewType.Registration);
-        }
+        #endregion
     }
 }

@@ -1,27 +1,25 @@
-﻿using Client.ViewModels;
-using Common.Network;
-using System.Windows;
-
-namespace Client.Services
+﻿namespace Client.Services
 {
-    class ChatMenuService
+    using System.Windows;
+
+    using Common.Network;
+
+    using View;
+
+    using ViewModels;
+
+    internal class ChatMenuService
     {
         #region Fields
 
-        ChatViewModel _chatViewModel;
-        ITransport _transport;
+        private ChatViewModel _chatViewModel;
+        private ITransport _transport;
 
-        #endregion Fields
+        #endregion
 
         #region Constructors
 
-        public ChatMenuService()
-        {
-            //_chatViewModel = chatViewModel; ChatViewModel chatViewModel,ITransport transport
-            //_transport = transport;
-        }
-
-        #endregion Constructors
+        #endregion
 
         #region Methods
 
@@ -29,15 +27,17 @@ namespace Client.Services
         {
             Application.Current.Shutdown();
         }
+
         public void Settings()
         {
-
+            var settingsWindow = new SettingsWindow();
+            settingsWindow.Show();
         }
+
         public void About()
         {
-
         }
 
-        #endregion Methods
+        #endregion
     }
 }

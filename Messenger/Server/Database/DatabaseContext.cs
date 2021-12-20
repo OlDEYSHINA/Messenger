@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data.Entity;
-using Server.Database.DBModels;
-
-namespace Server.Database
+﻿namespace Server.Database
 {
-    class DatabaseContext : DbContext
+    using System.Data.Entity;
+
+    using DBModels;
+
+    internal class DatabaseContext : DbContext
     {
         #region Properties
 
@@ -18,15 +14,16 @@ namespace Server.Database
 
         public DbSet<ClientEvent> ClientsEvents { get; set; }
 
-        #endregion Properties
+        #endregion
 
         #region Constructors
 
-        public DatabaseContext(string connectionString) : base("DBConnection")
+        public DatabaseContext(string connectionString)
+            : base("DBConnection")
         {
             Database.Connection.ConnectionString = connectionString;
         }
 
-        #endregion Constructors
+        #endregion
     }
 }

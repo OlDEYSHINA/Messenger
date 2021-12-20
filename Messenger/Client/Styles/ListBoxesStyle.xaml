@@ -1,0 +1,94 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Client.Styles">
+    <Style x:Key="ListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                
+                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                    <Border x:Name="border" HorizontalAlignment="Left">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            
+                            <TextBlock x:Name="usernameMessage" Grid.Row="0" FontSize="14" 
+                                       HorizontalAlignment="Left" Margin="10,0,0,0" Text="{Binding Path=UsernameSource}"/>
+                            
+                                <Border x:Name="textBorder" Grid.Row="1" Background="LightBlue" CornerRadius="10">
+                                    <TextBlock  Text="{Binding Text}" MaxWidth="480" TextWrapping="Wrap" Margin="5,0,5,0"/>
+                                </Border>
+                            <TextBlock Grid.Row="2" FontSize="10" Foreground="Gray" HorizontalAlignment="Right"
+                                       Text="{Binding Time}"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Path=DataContext.IsDarkTheme, 
+                                    RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" Value="True">
+                            <Setter Property="Background" Value="Gray" TargetName="textBorder"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsMyMessage}" Value="True">
+                            <Setter Property="HorizontalAlignment" Value="Right" TargetName="usernameMessage"/>
+                            <Setter Property="Margin" Value="0,0,10,0" TargetName="usernameMessage"/>
+                            <Setter Property="Background" Value="CornflowerBlue" TargetName="textBorder"/>
+                            <Setter Property="HorizontalAlignment" Value="Right" TargetName="border"/>
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+                
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="UserListViewItemStyle" TargetType="{x:Type ListViewItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                    <Border x:Name="borderUser" Background="LightCoral"  CornerRadius="5">
+                        <Grid>
+                            <TextBlock Text="{Binding Name}" FontSize="16" Width="180" HorizontalAlignment="Left"
+                                       TextWrapping="Wrap" Margin="10,0,0,0" Foreground="Black" FontWeight="Bold"/>
+                            <TextBlock x:Name="isOnlineStat" Text="Offline" HorizontalAlignment="Right"
+                                       Margin="0,0,10,0" FontWeight="DemiBold"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding IsOnline}" Value="True">
+                            <Setter Property="Background" Value="LightGreen" TargetName="borderUser"/>
+                            <Setter Property="TextBlock.Text" Value="Online" TargetName="isOnlineStat"/>
+                        </DataTrigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="Aqua" TargetName="borderUser"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="PrimaryListBoxStyle" TargetType="{x:Type ListBox}">
+        <Setter Property="Background" Value="#FFF1F1F1"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsDarkTheme}" Value="True">
+                <Setter Property="Background" Value="#FF1E1E1E"/>
+                <Setter Property="Foreground" Value="White"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="EventLogListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate >
+                    <Border Background="AliceBlue" CornerRadius="3">
+                        <Grid Background="LightBlue" Margin="2,2,2,2" >
+                            <TextBlock Text="{Binding Login}"/>
+                            <TextBlock Margin="200,0,0,0" HorizontalAlignment="Left" Text="{Binding EventText}"/>
+                            <TextBlock Text="{Binding Date}" HorizontalAlignment="Right"/>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

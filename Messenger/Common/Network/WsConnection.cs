@@ -14,14 +14,14 @@
     public class WsConnection : WebSocketBehavior
     {
         #region Fields
-        
+
         private readonly ConcurrentQueue<MessageContainer> _sendQueue;
 
         private WsServer _server;
 
         private int _sending;
 
-        #endregion Fields
+        #endregion
 
         #region Properties
 
@@ -31,7 +31,7 @@
 
         public bool IsConnected => Context.WebSocket?.ReadyState == WebSocketState.Open;
 
-        #endregion Properties
+        #endregion
 
         #region Constructors
 
@@ -43,7 +43,7 @@
             Id = Guid.NewGuid();
         }
 
-        #endregion Constructors
+        #endregion
 
         #region Methods
 
@@ -55,12 +55,16 @@
         public void Send(MessageContainer container)
         {
             if (!IsConnected)
+            {
                 return;
+            }
 
             _sendQueue.Enqueue(container);
+
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
+            {
                 SendImpl();
-          
+            }
         }
 
         public void Close()
@@ -86,14 +90,15 @@
                 _server.HandleMessage(Id, message);
             }
         }
+
         private void SendCompleted(bool completed)
         {
             // При отправке произошла ошибка.
             if (!completed)
             {
-
                 _server.FreeConnection(Id);
                 Context.WebSocket.CloseAsync();
+
                 return;
             }
 
@@ -103,16 +108,23 @@
         private void SendImpl()
         {
             if (!IsConnected)
+            {
                 return;
+            }
 
-            if (!_sendQueue.TryDequeue(out var message) && Interlocked.CompareExchange(ref _sending, 0, 1) == 1)
+            if (!_sendQueue.TryDequeue(out MessageContainer message) && Interlocked.CompareExchange(ref _sending, 0, 1) == 1)
+            {
                 return;
+            }
 
-            var settings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
+            var settings = new JsonSerializerSettings
+                           {
+                               NullValueHandling = NullValueHandling.Ignore
+                           };
             string serializedMessages = JsonConvert.SerializeObject(message, settings);
             SendAsync(serializedMessages, SendCompleted);
         }
 
-        #endregion Methods
+        #endregion
     }
 }

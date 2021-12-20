@@ -8,16 +8,16 @@
 
         public string Message { get; }
 
-        #endregion Properties
+        #endregion
 
         #region Constructors
 
-        public MessageReceivedEventArgs(string clientName,string message)
+        public MessageReceivedEventArgs(string clientName, string message)
         {
             ClientName = clientName;
             Message = message;
         }
 
-        #endregion Constructors
+        #endregion
     }
 }

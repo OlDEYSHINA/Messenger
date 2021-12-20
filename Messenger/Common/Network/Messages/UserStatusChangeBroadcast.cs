@@ -1,37 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Common.Network.Messages
+﻿namespace Common.Network.Messages
 {
-    class UserStatusChangeBroadcast
+    internal class UserStatusChangeBroadcast
     {
         #region Properties
 
         public UserState User { get; set; }
 
-        #endregion Properties
+        #endregion
 
         #region Constructors
+
         public UserStatusChangeBroadcast(UserState incomeUser)
         {
             User = incomeUser;
         }
-        #endregion Constructors
+
+        #endregion
 
         #region Methods
+
         public MessageContainer GetContainer()
         {
             var container = new MessageContainer
-            {
-                Identifier = nameof(UserStatusChangeBroadcast),
-                Payload = this
-            };
+                            {
+                                Identifier = nameof(UserStatusChangeBroadcast),
+                                Payload = this
+                            };
 
             return container;
         }
-        #endregion Methods
+
+        #endregion
     }
 }

@@ -1,16 +1,17 @@
-﻿using Server.Database.DBModels;
-using System;
-using System.Collections.Generic;
-
-namespace Server.Database.DBServices
+﻿namespace Server.Database.DBServices
 {
-    class MessageService
+    using System;
+    using System.Collections.Generic;
+
+    using DBModels;
+
+    internal class MessageService
     {
         #region Fields
 
         private readonly DatabaseController _databaseController;
 
-        #endregion Fields
+        #endregion
 
         #region Constructors
 
@@ -19,7 +20,7 @@ namespace Server.Database.DBServices
             _databaseController = databaseController;
         }
 
-        #endregion Constructors
+        #endregion
 
         #region Methods
 
@@ -33,10 +34,11 @@ namespace Server.Database.DBServices
             return _databaseController.GetGlobalMessages();
         }
 
-        public List<Message> GetPrivateMessages(string myLogin,string companionLogin)
+        public List<Message> GetPrivateMessages(string myLogin, string companionLogin)
         {
             return _databaseController.GetPrivateMessages(myLogin, companionLogin);
         }
-        #endregion Methods
+
+        #endregion
     }
 }

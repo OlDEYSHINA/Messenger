@@ -6,12 +6,12 @@
              xmlns:viewModels="clr-namespace:Client.ViewModels"
              xmlns:local="clr-namespace:Client.View"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance viewModels:RegistrationViewModel}" Height="194.143" Width="299.857">
-    <Grid Background="White" Margin="0,0,-46,0">
+             d:DataContext="{d:DesignInstance viewModels:RegistrationViewModel}" Height="201" Width="348">
+    <Grid Background="White">
         <Label x:Name="RegisterLoginLabel" Content="Логин" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="70"/>
         <Label x:Name="RegisterPasswordLabel" Content="Пароль" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="53"/>
         <Label x:Name="RegisterConfirmPasswordLabel" Content="Повторите пароль" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="RegisterLoginTextBox" HorizontalAlignment="Left" Height="23" Margin="146,13,0,0"  Text="{Binding Username}"
+        <TextBox x:Name="RegisterLoginTextBox" HorizontalAlignment="Left" Height="23" Margin="146,13,10,0"  Text="{Binding Username}"
                  TextWrapping="Wrap" VerticalAlignment="Top" Width="187" BorderBrush="{Binding LoginColor}" >
             <TextBox.ToolTip>
                 <ToolTip Placement="Right" 
@@ -25,7 +25,7 @@
                 </ToolTip>
             </TextBox.ToolTip>
         </TextBox>
-        <TextBox x:Name="RegisterPasswordTextBox" HorizontalAlignment="Left" Height="23" Margin="146,45,0,0" 
+        <TextBox x:Name="RegisterPasswordTextBox" HorizontalAlignment="Left" Height="23" Margin="146,45,10,0" 
                  TextWrapping="Wrap" VerticalAlignment="Top" Width="187" Text="{Binding Password}" BorderBrush="{Binding PasswordColor}">
             <TextBox.ToolTip>
                 <ToolTip Placement="Right" 
@@ -39,7 +39,7 @@
                 </ToolTip>
             </TextBox.ToolTip>
         </TextBox>
-        <TextBox x:Name="RegisterConfirmPasswordTextBox" HorizontalAlignment="Left" Height="23" Margin="146,76,0,0" 
+        <TextBox x:Name="RegisterConfirmPasswordTextBox" HorizontalAlignment="Left" Height="23" Margin="146,76,10,0" 
                  TextWrapping="Wrap" VerticalAlignment="Top" Width="187" Text="{Binding ConfirmPassword}" BorderBrush="{Binding ConfirmPasswordColor}">
             <TextBox.ToolTip>
                 <ToolTip Placement="Right" 
@@ -54,7 +54,8 @@
             </TextBox.ToolTip>
         </TextBox>
         <Button x:Name="RegisterConfirmButton" Content="Зарегистрироваться" Command="{Binding ConfirmRegistration}" 
-                HorizontalAlignment="Left" Margin="185,139,0,0" VerticalAlignment="Top" Width="151" Height="45"/>
+                HorizontalAlignment="Left" Margin="185,139,10,10" VerticalAlignment="Top" Width="151" Height="45"/>
         <Label Content="{Binding RegistrationResultLabel}" HorizontalAlignment="Left" Height="27" Margin="49,104,0,0" VerticalAlignment="Top" Width="239" Foreground="Red"/>
+        <Button Command="{Binding CancelRegistrationCommand}" Content="Отменить" HorizontalAlignment="Left" Margin="10,139,0,0" VerticalAlignment="Top" Width="150" Height="45"/>
     </Grid>
 </UserControl>

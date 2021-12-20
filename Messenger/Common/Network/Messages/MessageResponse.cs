@@ -1,35 +1,35 @@
 ﻿namespace Common.Network.Messages
 {
-    public class MessageRequest
+    public class MessageResponse
     {
         #region Properties
 
         public string Message { get; set; }
 
-        #endregion Properties
+        #endregion
 
         #region Constructors
 
-        public MessageRequest(string message)
+        public MessageResponse(string message)
         {
             Message = message;
         }
 
-        #endregion Constructors
+        #endregion
 
         #region Methods
 
         public MessageContainer GetContainer()
         {
             var container = new MessageContainer
-            {
-                Identifier = nameof(MessageRequest),
-                Payload = this
-            };
+                            {
+                                Identifier = nameof(MessageResponse),
+                                Payload = this
+                            };
 
             return container;
         }
 
-        #endregion Methods
+        #endregion
     }
 }
