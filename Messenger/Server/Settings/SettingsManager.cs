@@ -11,7 +11,7 @@
     {
         #region Fields
 
-        public readonly Settings DefaultSettings = new Settings
+        private readonly Settings _defaultSettings = new Settings
                                                    {
                                                        ConnectionString = "data source=(localdb)\\MSSQLLocalDB;Initial " +
                                                                           "Catalog=userstore;Integrated Security=True;",
@@ -22,20 +22,22 @@
                                                        ProviderName = "System.Data.SqlClient"
                                                    };
 
-        private readonly string DefaultPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
-                                              "\\Messanger\\ServerSettings.txt";
+        private readonly string _defaultPath = Environment.CurrentDirectory +
+                                              "\\ServerSettings.json";
 
         #endregion
 
         #region Properties
 
-        public int Port { get; set; }
+        public Settings DefaultSettings => _defaultSettings;
 
-        public long Timeout { get; set; }
+        public int Port { get; }
 
-        public IPAddress Ip { get; set; }
+        public long Timeout { get; }
 
-        public ConnectionStringSettings ConnectionSettings { get; set; }
+        public IPAddress Ip { get; }
+
+        public ConnectionStringSettings ConnectionSettings { get; }
 
         #endregion
 
@@ -43,7 +45,7 @@
 
         public SettingsManager()
         {
-            Settings settings = LoadFromFile(DefaultPath);
+            Settings settings = LoadFromFile(_defaultPath);
 
             if (settings.ConnectionString != null)
             {
@@ -58,8 +60,8 @@
             else
             {
                 Console.WriteLine("Файл с настройками поврежден или отсутствует,\nсоздание нового файла настроек");
-                SaveToFile(DefaultSettings, DefaultPath);
-                settings = LoadFromFile(DefaultPath);
+                SaveToFile(_defaultSettings, _defaultPath);
+                settings = LoadFromFile(_defaultPath);
                 Ip = IPAddress.Parse(settings.Ip);
                 Port = settings.Port;
                 Timeout = settings.Timeout;
@@ -74,13 +76,15 @@
 
         #region Methods
 
-        public void SaveToFile(Settings settings, string savePath)
+        private void SaveToFile(Settings settings, string savePath)
         {
             Directory.CreateDirectory(Path.GetDirectoryName(savePath));
-            var serializer = new JsonSerializer();
-            serializer.NullValueHandling = NullValueHandling.Include;
-            serializer.TypeNameHandling = TypeNameHandling.All;
-            serializer.Formatting = Formatting.Indented;
+            var serializer = new JsonSerializer
+                             {
+                                 NullValueHandling = NullValueHandling.Include,
+                                 TypeNameHandling = TypeNameHandling.All,
+                                 Formatting = Formatting.Indented
+                             };
 
             using (var sw = new StreamWriter(savePath))
             {
@@ -89,20 +93,20 @@
                     serializer.Serialize(writer, settings);
                 }
             }
-
-            ;
         }
 
-        public Settings LoadFromFile(string loadPath)
+        private Settings LoadFromFile(string loadPath)
         {
             var settings = new Settings();
 
             try
             {
-                var serializer = new JsonSerializer();
-                serializer.NullValueHandling = NullValueHandling.Include;
-                serializer.TypeNameHandling = TypeNameHandling.All;
-                serializer.Formatting = Formatting.None;
+                var serializer = new JsonSerializer
+                                 {
+                                     NullValueHandling = NullValueHandling.Include,
+                                     TypeNameHandling = TypeNameHandling.All,
+                                     Formatting = Formatting.None
+                                 };
 
                 using (var sr = new StreamReader(loadPath))
                 {
@@ -114,9 +118,16 @@
             }
             catch (Exception)
             {
-                return settings;
+                SaveToFile(_defaultSettings, _defaultPath);
+                return _defaultSettings;
             }
 
+            if (settings == null)
+            {
+                settings = _defaultSettings;
+                SaveToFile(_defaultSettings, _defaultPath);
+            }
+            
             return settings;
         }
 

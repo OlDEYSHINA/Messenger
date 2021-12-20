@@ -28,46 +28,6 @@
             </TextBox.InputBindings>
         </TextBox>
         <Button Content="Отправить" Command="{Binding SendMessage}" HorizontalAlignment="Right" Height="19" Margin="0,421,10,10" VerticalAlignment="Bottom" Width="89"/>
-        <!-- <ListView ItemsSource="{Binding ChatMessages}" HorizontalAlignment="Left" Height="377" Margin="320,41,0,0" VerticalAlignment="Top" Width="470">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=UsernameSource}" Width="100">Имя</GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=Text}" Width="300">Сообщение</GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=Time}" Width="80">Время</GridViewColumn>
-                </GridView>
-            </ListView.View>
-            <ListView.Resources>
-                <col:ArrayList x:Key="Amogus">
-
-                </col:ArrayList>
-            </ListView.Resources>
-        </ListView>
-
-        <ListView x:Name="listView" ItemsSource="{Binding ChatMessages}"  Height="377" Margin="10,32,10,0" 
-                  VerticalAlignment="Top" Width="auto" Grid.ColumnSpan="3" Grid.Column="2">
-            <ListView.View>
-                <GridView>
-                    
-                        <GridViewColumn>
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate >
-                                    <Grid Width="440" >
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                        </Grid.RowDefinitions>
-                                        <TextBlock Grid.Row="1"  TextWrapping="Wrap" Text="{Binding Path=Text}" HorizontalAlignment="Left"/>
-                                        <TextBlock Grid.Row="0"  TextWrapping="Wrap" Text="{Binding Path=Time}" HorizontalAlignment="Right"/>
-                                        <TextBlock Grid.Row="0"  TextWrapping="Wrap" Text="{Binding UsernameSource}" HorizontalAlignment="Left"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-
-                    
-                </GridView>
-            </ListView.View>
-        </ListView>-->
         <ListBox  x:Name="messagesList" Height="377" Margin="262,32,10,0" 
                   VerticalAlignment="Top" Width="auto"  Style="{StaticResource PrimaryListBoxStyle}" 
                  ItemContainerStyle="{StaticResource ListBoxItemStyle}"
@@ -79,10 +39,9 @@
             </MenuItem>
             <MenuItem Header="Options">
                 <MenuItem Header="Event log" Command="{Binding OpenEventLog}"></MenuItem>
-                <MenuItem Header="Settings" Command="{Binding MenuSettingsButton}"></MenuItem>
             </MenuItem>
             <MenuItem Header="About">
-                <MenuItem Header="About"></MenuItem>
+                <MenuItem Header="About" Command="{Binding MenuAboutButton}"></MenuItem>
             </MenuItem>
         </Menu>
     </Grid>

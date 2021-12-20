@@ -77,7 +77,7 @@
 
         public void Start()
         {
-            Console.WriteLine($"WebSocketServer: {IPAddress.Any}:{_port}");
+            Console.WriteLine($"WebSocketServer: {_ip}:{_port}");
             _wsServer.Start();
         }
 
@@ -170,7 +170,7 @@
         {
             LoginResult result = _userService.TryLogin(e.Login, e.Password);
 
-            _wsServer.CheckLoginResponse(e.Login, e.Password, e.Connection, e.ClientId, e.ConnectionResponse, result);
+            _wsServer.CheckLoginResponse(e.Login, e.Connection, e.ClientId, e.ConnectionResponse, result);
         }
 
         private void HandleMessageReceived(object sender, MessageReceivedEventArgs e)
@@ -186,9 +186,9 @@
         {
             string clientState = e.Connected ? "подключен" : "отключен";
             string message = $"Клиент '{e.ClientName}' {clientState} по причине'{e.Reason}'.";
-            bool otvet = _clientEventService.TryAddClientEvent(e.ClientName, clientState, DateTime.Now);
+            bool resultEvent = _clientEventService.TryAddClientEvent(e.ClientName, clientState, DateTime.Now);
 
-            if (!otvet)
+            if (!resultEvent)
             {
                 Console.WriteLine("Ошибка записи в журнал событий");
             }
