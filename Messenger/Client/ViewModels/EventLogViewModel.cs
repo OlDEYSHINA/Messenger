@@ -1,16 +1,13 @@
 ﻿namespace Client.ViewModels
 {
+    using Common.Network;
+    using Common.Network.Messages;
+    using Prism.Commands;
+    using Prism.Mvvm;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Windows;
-
-    using Common.Network;
-    using Common.Network.Messages;
-
-    using Prism.Commands;
-    using Prism.Mvvm;
-
     using View;
 
     public class EventLogViewModel : BindableBase
@@ -44,7 +41,13 @@
         public string SearchString
         {
             get => _searchString;
-            set => SetProperty(ref _searchString, value);
+            set
+            {
+                if (string.IsNullOrEmpty(value) || value?.Length < 30)
+                {
+                    SetProperty(ref _searchString, value);
+                }
+            }
         }
 
         public DateTime FirstDate
@@ -63,16 +66,6 @@
         {
             get => _errorString;
             set => SetProperty(ref _errorString, value);
-        }
-
-        private List<EventNote> incomeEventLog
-        {
-            get => _incomeEventLog;
-            set
-            {
-                _incomeEventLog = value;
-                SearchInEventLog();
-            }
         }
 
         #endregion
@@ -103,6 +96,11 @@
 
         public void SearchInEventLog()
         {
+            if (_incomeEventLog == null)
+            {
+                return;
+            }
+
             if (string.IsNullOrEmpty(_searchString))
             {
                 if (EventLog != null)
@@ -117,16 +115,16 @@
             }
             else
             {
-                List<EventNote> finded = _incomeEventLog.FindAll(o => o.EventText.Contains(_searchString) || o.Login.Contains(_searchString));
+                List<EventNote> eventNotes = _incomeEventLog.FindAll(o => o.EventText.Contains(_searchString) || o.Login.Contains(_searchString));
 
                 if (EventLog != null)
                 {
-                    EventLog.Clear();
+                    Application.Current.Dispatcher.Invoke(() => EventLog.Clear());
                 }
 
-                foreach (EventNote item in finded)
+                foreach (EventNote item in eventNotes)
                 {
-                    EventLog.Add(item);
+                    Application.Current.Dispatcher.Invoke(() => EventLog?.Add(item));
                 }
             }
         }
@@ -150,7 +148,6 @@
         public void OpenWindow()
         {
             _eventLogWindow.Show();
-            // _eventLogWindow.Activate();
         }
 
         #endregion

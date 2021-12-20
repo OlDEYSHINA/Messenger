@@ -195,7 +195,7 @@
 
             var container = JsonConvert.DeserializeObject<MessageContainer>(e.Data);
 
-            switch (container.Identifier)
+            switch (container?.Identifier)
             {
                 case nameof(ConnectionResponse):
                     var connectionResponse = ((JObject) container.Payload).ToObject(typeof(ConnectionResponse)) as ConnectionResponse;
@@ -221,7 +221,7 @@
                     break;
                 case nameof(UserStatusChangeBroadcast):
                     var userStatusBroadcast = ((JObject) container.Payload).ToObject(typeof(UserStateChangedEventArgs)) as UserStateChangedEventArgs;
-                    UserStateChanged?.Invoke(this, new UserStateChangedEventArgs(userStatusBroadcast.user));
+                    UserStateChanged?.Invoke(this, new UserStateChangedEventArgs(userStatusBroadcast.UserState));
 
                     break;
                 case nameof(RegistrationResponse):

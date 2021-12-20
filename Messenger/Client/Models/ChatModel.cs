@@ -42,21 +42,21 @@
 
         #region Methods
 
-        public ObservableCollection<ObservableMessage> GetChat(string name)
+        public ObservableCollection<ObservableMessage> GetChat(string login)
         {
-            ObservableCollection<ObservableMessage> found = _chats.FirstOrDefault(x => x.Key == name).Value;
+            ObservableCollection<ObservableMessage> chatMessages = _chats.FirstOrDefault(x => x.Key == login).Value;
 
-            if (found == null)
+            if (chatMessages == null)
             {
-                found = new ObservableCollection<ObservableMessage>();
-                _chats.TryAdd(name, found);
-                _transport.LoadListOfMessages(_myLogin, name);
+                chatMessages = new ObservableCollection<ObservableMessage>();
+                _chats.TryAdd(login, chatMessages);
+                _transport.LoadListOfMessages(_myLogin, login);
             }
 
             var observableMessages = new ObservableCollection<ObservableMessage>();
             bool isMyMessage;
 
-            foreach (ObservableMessage item in found)
+            foreach (ObservableMessage item in chatMessages)
             {
                 if (item.UsernameSource == _myLogin)
                 {
@@ -83,32 +83,31 @@
 
         public void NewMessage(ObservableMessage message)
         {
+            ObservableCollection<ObservableMessage> clientChat;
+
             if (message.UsernameTarget == "Global")
             {
-                ObservableCollection<ObservableMessage> found = _chats.FirstOrDefault(x => x.Key == message.UsernameTarget).Value;
+                clientChat = _chats.FirstOrDefault(x => x.Key == message.UsernameTarget).Value;
 
-                Application.Current.Dispatcher.Invoke(() => found.Add(message));
+                Application.Current.Dispatcher.Invoke(() => clientChat?.Add(message));
             }
             else if (message.UsernameSource == _myLogin)
             {
-                ObservableCollection<ObservableMessage> found;
-                found = _chats.FirstOrDefault(x => x.Key == message.UsernameTarget).Value;
+                clientChat = _chats.FirstOrDefault(x => x.Key == message.UsernameTarget).Value;
 
-                if (found == null)
+                if (clientChat == null)
                 {
                     GetChat(message.UsernameTarget);
-                    found = _chats.FirstOrDefault(x => x.Key == message.UsernameTarget).Value;
+                    clientChat = _chats.FirstOrDefault(x => x.Key == message.UsernameTarget).Value;
                 }
 
-                Application.Current.Dispatcher.Invoke(() => found.Add(message)); //ZAFICSIRUEM
+                Application.Current.Dispatcher.Invoke(() => clientChat?.Add(message)); //ZAFICSIRUEM
             }
             else
             {
-                ObservableCollection<ObservableMessage> found = _chats.FirstOrDefault(x => x.Key == message.UsernameSource).Value;
-                Application.Current.Dispatcher.Invoke(() => found.Add(message));
+                clientChat = _chats.FirstOrDefault(x => x.Key == message.UsernameSource).Value;
+                Application.Current.Dispatcher.Invoke(() => clientChat?.Add(message));
             }
-
-            // App.Current.Dispatcher.Invoke(() => CurrentChat.Add(message));
         }
 
         #endregion

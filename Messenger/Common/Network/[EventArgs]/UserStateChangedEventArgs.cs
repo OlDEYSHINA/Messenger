@@ -4,15 +4,15 @@
     {
         #region Properties
 
-        public UserState user { get; }
+        public UserState UserState { get; }
 
         #endregion
 
         #region Constructors
 
-        public UserStateChangedEventArgs(UserState userStatus)
+        public UserStateChangedEventArgs(UserState userState)
         {
-            user = userStatus;
+            UserState = userState;
         }
 
         #endregion
