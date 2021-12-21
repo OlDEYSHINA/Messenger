@@ -219,6 +219,8 @@
             }
             else
             {
+                _transport.ConnectionStateChanged -= HandleConnectionStateChanged;
+
                 EnableLoginView = false;
                 _mainWindowViewModel.ChangeView(MainWindowViewModel.ViewType.Login);
             }

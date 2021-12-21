@@ -1,10 +1,8 @@
 ﻿namespace Client.ViewModels
 {
-    using System.Windows;
-
     using Common.Network;
-
     using Prism.Mvvm;
+    using System.Windows;
 
     internal class MainWindowViewModel : BindableBase
     {
@@ -70,26 +68,29 @@
             switch (viewType)
             {
                 case ViewType.Login:
-                {
-                    CurrentContentVM = loginVM;
+                    {
+                        CurrentContentVM = loginVM;
 
-                    break;
-                }
+                        break;
+                    }
 
                 case ViewType.Chat:
-                {
-                    chatViewModel = new ChatViewModel(this, _transport, loginVM.UsernameLogin);
-                    CurrentContentVM = chatViewModel;
+                    {
+                        if (chatViewModel == null)
+                        {
+                            chatViewModel = new ChatViewModel(this, _transport, loginVM.UsernameLogin);
+                        }
+                        CurrentContentVM = chatViewModel;
 
-                    break;
-                }
+                        break;
+                    }
 
                 case ViewType.Registration:
-                {
-                    CurrentContentVM = registrationViewModel;
+                    {
+                        CurrentContentVM = registrationViewModel;
 
-                    break;
-                }
+                        break;
+                    }
             }
         }
 
